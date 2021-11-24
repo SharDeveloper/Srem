@@ -1,0 +1,14 @@
+module Srem
+
+// ^ - begin of string
+primitive StringBeginPattern
+
+#alwaysinline
+def StringBeginPattern() StringBeginPattern
+    return unsafe_object(StringBeginPattern.typeNumber~(), 0)
+
+attach StringBeginPattern to Independent
+
+attach StringBeginPattern to Pattern
+    def patternMatch?(string String, pattern StringBeginPattern, write charIndex Int, write namedStrings Map) <>String
+        return (charIndex == 0).select("", nothing)

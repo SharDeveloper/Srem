@@ -1,0 +1,105 @@
+module Srem
+
+// .       - any character
+// `d      - [0-9]
+// `D      - [^0-9]
+// `s      - space, tab, new line
+// `S      - not \s
+// `w      - [a-zA-Z0-9_]
+// `W      - [^a-zA-Z0-9_]
+// #char   - specified character
+// char    - any character that is not part of another pattern is itself
+// [chars] - any of chars
+//     x-y - chars from x to y
+//     allow `d, `s, `w, #char, char
+//     if the character "^" is specified after the character "[", any character other than those specified is considered.
+type CharPattern
+    // chars     String
+    // negative? Bool
+
+attach CharPattern to FieldChars
+    #alwaysinline
+    def chars~(pattern CharPattern) String
+        return pattern.typeGetItem(0)
+
+attach CharPattern to FieldNegative
+    #alwaysinline
+    def negative?(pattern CharPattern) Bool
+        return pattern.typeGetItem(1)
+
+#alwaysinline
+def CharPattern(chars String, negative Bool) CharPattern
+    return CharPattern.fromList({chars, negative})
+
+def readCharPattern(regExp String, write charIndex Int) CharPattern
+    charIndex++
+    if charIndex == regExp.length~()
+        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    const negative Bool = regExp[charIndex] == '^'
+    if negative
+        charIndex++
+        if charIndex == regExp.length~()
+            throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    var chars String = ""
+    for :(loop)
+        switch :(switch) regExp[charIndex]
+        case '(', ')', '.', '[', '{', '}', '^', '$', '|', '?', '+', '*'
+            throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+        case '`'
+            charIndex++
+            var newChars String = ""
+            switch regExp[charIndex]
+            case 'd'
+                newChars = "0123456789"
+            case 's'
+                newChars = " \t\n"
+            case 'w'
+                newChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz"
+            default
+                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            chars += newChars
+        case ']'
+            end loop
+        case '-'
+            charIndex++
+            if chars.empty?() || charIndex == regExp.length~()
+                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", chars.empty?().select(charIndex - 1, charIndex))
+            const fromCharCode Int = charToInt(chars[chars.length~() - 1])
+            var toChar Char = regExp[charIndex]
+            switch toChar
+            case '(', ')', '.', '[', ']', '{', '}', '^', '$', '|', '?', '+', '*', '`', '-'
+                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", chars.empty?().select(charIndex - 1, charIndex))
+            case '#'
+                charIndex++
+                if charIndex == regExp.length~()
+                    throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", chars.empty?().select(charIndex - 1, charIndex))
+                toChar = regExp[charIndex]
+            default
+                toChar = regExp[charIndex]
+            const toCharCode Int = charToInt(toChar)
+            const direction Int = (fromCharCode < toCharCode).select(1, -1)
+            for :(charCode Int = fromCharCode + 1) charCode <= toCharCode; charCode += direction
+                chars.addItem(intToChar(charCode))
+        case '#'
+            charIndex++
+            if charIndex == regExp.length~()
+                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            fallthrough switch
+        default
+            chars.addItem(regExp[charIndex])
+        charIndex++
+        if charIndex == regExp.length~()
+            throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    if chars.empty?()
+        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    chars.uniq()
+    return CharPattern(chars, negative)
+
+attach CharPattern to Pattern
+    def patternMatch?(string String, pattern CharPattern, write charIndex Int, write namedStrings Map) <>String
+        if charIndex != string.length~()
+            const currentChar Char = string[charIndex]
+            if pattern.chars~().contain?(currentChar) != pattern.negative?()
+                charIndex++
+                return currentChar.toString()
+        return nothing

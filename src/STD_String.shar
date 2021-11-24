@@ -1,0 +1,25 @@
+module Srem
+
+def readString(regExp String, write charIndex Int) String
+    var result String = ""
+    for :(loop) charIndex < regExp.length~(); charIndex++
+        switch :(switch) regExp[charIndex]
+        case '(', ')', '`', '.', '[', ']', '{', '}', '^', '$', '|', '?', '+', '*'
+            end loop
+        case '#'
+            charIndex++
+            if charIndex == regExp.length~()
+                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            fallthrough switch
+        default
+            result.addItem(regExp[charIndex])
+    return result
+
+attach String to Pattern
+    def patternMatch?(string, pattern String, write charIndex Int, write namedStrings Map) <>String
+        if partsEqual?(string, charIndex, pattern, 0, pattern.length~())
+            const newCharIndex Int = charIndex + pattern.length~()
+            const result String = string[charIndex:newCharIndex]
+            charIndex = newCharIndex
+            return result
+        return nothing

@@ -1,0 +1,14 @@
+module Srem
+
+// $ - end of string
+primitive StringEndPattern
+
+#alwaysinline
+def StringEndPattern() StringEndPattern
+    return unsafe_object(StringEndPattern.typeNumber~(), 0)
+
+attach StringEndPattern to Independent
+
+attach StringEndPattern to Pattern
+    def patternMatch?(string String, pattern StringEndPattern, write charIndex Int, write namedStrings Map) <>String
+        return (charIndex == string.length~()).select("", nothing)

@@ -1,0 +1,27 @@
+module Srem
+
+// (pattern)|(pattern)
+type OrPattern
+    // firstRegExp, secondRegExp RegExp
+
+attach OrPattern to FieldFirstRegExp
+    #alwaysinline
+    def firstRegExp~(pattern OrPattern) RegExp
+        return pattern.typeGetItem(0)
+
+attach OrPattern to FieldSecondRegExp
+    #alwaysinline
+    def secondRegExp~(pattern OrPattern) RegExp
+        return pattern.typeGetItem(1)
+
+#alwaysinline
+def OrPattern(firstRegExp, secondRegExp RegExp) OrPattern
+    return OrPattern.fromList({firstRegExp, secondRegExp})
+
+attach OrPattern to Pattern
+    def patternMatch?(string String, pattern OrPattern, write charIndex Int, write namedStrings Map) <>String
+        do
+            const matchedString <>String = string.patternMatch?(pattern.firstRegExp~(), charIndex, namedStrings)
+            if !matchedString.nothing?()
+                return matchedString
+        return string.patternMatch?(pattern.secondRegExp~(), charIndex, namedStrings)

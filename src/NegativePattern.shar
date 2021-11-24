@@ -1,0 +1,19 @@
+module Srem
+
+// (?:pattern)
+type NegativePattern
+
+#alwaysinline
+def NegativePattern(pattern RegExp) NegativePattern
+    return NegativePattern.fromList(pattern.toList())
+
+attach NegativePattern to FieldPattern
+    #alwaysinline
+    def pattern~(pattern NegativePattern) RegExp
+        return RegExp.fromList(pattern.toList())
+
+attach NegativePattern to Pattern
+    def patternMatch?(string String, pattern NegativePattern, write charIndex Int, write namedStrings Map) <>String
+        var tmpCharIndex Int = charIndex
+        var tmpNamedStrings Map = namedStrings
+        return string.patternMatch?(pattern.pattern~(), tmpCharIndex, tmpNamedStrings).nothing?().select("", nothing)

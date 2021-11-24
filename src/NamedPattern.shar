@@ -1,0 +1,49 @@
+module Srem
+
+// (?(name)pattern)
+// name [a-z][a-zA-Z0-9_]
+type NamedPattern
+    // name    String
+    // pattern RegExp
+
+#alwaysinline
+def NamedPattern(name String, pattern RegExp) NamedPattern
+    return NamedPattern.fromList({name, pattern})
+
+attach NamedPattern to FieldName
+    #alwaysinline
+    def name~(pattern NamedPattern) String
+        return pattern.typeGetItem(0)
+
+attach NamedPattern to FieldPattern
+    #alwaysinline
+    def pattern~(pattern NamedPattern) RegExp
+        return pattern.typeGetItem(1)
+
+def readNamedPattern(regExp String, write charIndex Int) NamedPattern
+    const name String = readPatternName(regExp, charIndex)
+    if charIndex == regExp.length~() || regExp[charIndex] != ')'
+        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    charIndex++
+    const pattern NamedPattern = NamedPattern(name, readRegExp(regExp, charIndex))
+    return pattern
+
+def readPatternName(regExp String, write charIndex Int) String
+    if charIndex == regExp.length~() || !regExp[charIndex].inRange?('a', '{')
+        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    var result String = regExp[charIndex].toString()
+    charIndex++
+    for :(loop) charIndex < regExp.length~(); charIndex++
+        const currentChar Char = regExp[charIndex]
+        if (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || (currentChar >= '0' && currentChar <= '9') || currentChar == '_'
+            result.addItem(currentChar)
+        else
+            end loop
+    return result
+
+attach NamedPattern to Pattern
+    def patternMatch?(string String, pattern NamedPattern, write charIndex Int, write namedStrings Map) <>String
+        const matchedString <>String = string.patternMatch?(pattern.pattern~(), charIndex, namedStrings)
+        if !matchedString.nothing?()
+            namedStrings.put(pattern.name~(), matchedString)
+        return matchedString

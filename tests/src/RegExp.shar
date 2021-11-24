@@ -1,0 +1,906 @@
+module Main
+
+#noinline
+def testRegExp(write ok Int, write errorsCoordinates List)
+    testRegExp_char(ok, errorsCoordinates)
+    testRegExp_ignored(ok, errorsCoordinates)
+    testRegExp_negative(ok, errorsCoordinates)
+    testRegExp_wordBoundary(ok, errorsCoordinates)
+    testRegExp_nonWordBoundary(ok, errorsCoordinates)
+    testRegExp_string(ok, errorsCoordinates)
+    testRegExp_repeat(ok, errorsCoordinates)
+    testRegExp_stringBegin(ok, errorsCoordinates)
+    testRegExp_stringEnd(ok, errorsCoordinates)
+    testRegExp_namedPattern(ok, errorsCoordinates)
+    testRegExp_ifPattern(ok, errorsCoordinates)
+    testRegExp_namedString(ok, errorsCoordinates)
+    testRegExp_or(ok, errorsCoordinates)
+    testRegExp_regExp(ok, errorsCoordinates)
+
+#noinline
+def testRegExp_char(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp(".")).nothing?()
+        ".".match?(RegExp(".")).type!(Map).empty?()
+        "a".match?(RegExp(".")).type!(Map).empty?()
+        "Z".match?(RegExp(".")).type!(Map).empty?()
+        "\0000".match?(RegExp(".")).type!(Map).empty?()
+        "aa".match?(RegExp(".")).nothing?()
+        " a".match?(RegExp(".")).nothing?()
+        "..".match?(RegExp(".")).nothing?()
+        "".match?(RegExp("`d")).nothing?()
+        "a".match?(RegExp("`d")).nothing?()
+        "z".match?(RegExp("`d")).nothing?()
+        "Z".match?(RegExp("`d")).nothing?()
+        "A".match?(RegExp("`d")).nothing?()
+        ".".match?(RegExp("`d")).nothing?()
+        "_".match?(RegExp("`d")).nothing?()
+        "\0000".match?(RegExp("`d")).nothing?()
+        "\ffff".match?(RegExp("`d")).nothing?()
+        "/".match?(RegExp("`d")).nothing?()
+        ":".match?(RegExp("`d")).nothing?()
+        "00".match?(RegExp("`d")).nothing?()
+        "11".match?(RegExp("`d")).nothing?()
+        "99".match?(RegExp("`d")).nothing?()
+        "aa".match?(RegExp("`d")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`d")).type!(Map).empty?()
+    test: ok, errorsCoordinates
+        "".match?(RegExp("`D")).nothing?()
+        "a".match?(RegExp("`D")).type!(Map).empty?()
+        "z".match?(RegExp("`D")).type!(Map).empty?()
+        "Z".match?(RegExp("`D")).type!(Map).empty?()
+        "A".match?(RegExp("`D")).type!(Map).empty?()
+        ".".match?(RegExp("`D")).type!(Map).empty?()
+        "_".match?(RegExp("`D")).type!(Map).empty?()
+        "\0000".match?(RegExp("`D")).type!(Map).empty?()
+        "\ffff".match?(RegExp("`D")).type!(Map).empty?()
+        "/".match?(RegExp("`D")).type!(Map).empty?()
+        ":".match?(RegExp("`D")).type!(Map).empty?()
+        "00".match?(RegExp("`D")).nothing?()
+        "11".match?(RegExp("`D")).nothing?()
+        "99".match?(RegExp("`D")).nothing?()
+        "aa".match?(RegExp("`D")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`D")).nothing?()
+    test: ok, errorsCoordinates
+        "".match?(RegExp("`s")).nothing?()
+        "a".match?(RegExp("`s")).nothing?()
+        "z".match?(RegExp("`s")).nothing?()
+        "Z".match?(RegExp("`s")).nothing?()
+        "A".match?(RegExp("`s")).nothing?()
+        ".".match?(RegExp("`s")).nothing?()
+        "_".match?(RegExp("`s")).nothing?()
+        "\0000".match?(RegExp("`s")).nothing?()
+        "\ffff".match?(RegExp("`s")).nothing?()
+        "/".match?(RegExp("`s")).nothing?()
+        ":".match?(RegExp("`s")).nothing?()
+        "00".match?(RegExp("`s")).nothing?()
+        "11".match?(RegExp("`s")).nothing?()
+        "99".match?(RegExp("`s")).nothing?()
+        "aa".match?(RegExp("`s")).nothing?()
+        "  ".match?(RegExp("`s")).nothing?()
+        "\t\t".match?(RegExp("`s")).nothing?()
+        "\n\n".match?(RegExp("`s")).nothing?()
+        "\n\t ".match?(RegExp("`s")).nothing?()
+        "0".match?(RegExp("`s")).nothing?()
+        "1".match?(RegExp("`s")).nothing?()
+        "8".match?(RegExp("`s")).nothing?()
+        "9".match?(RegExp("`s")).nothing?()
+        " ".match?(RegExp("`s")).type!(Map).empty?()
+        "\t".match?(RegExp("`s")).type!(Map).empty?()
+        "\n".match?(RegExp("`s")).type!(Map).empty?()
+        "".match?(RegExp("`S")).nothing?()
+        "a".match?(RegExp("`S")).type!(Map).empty?()
+        "z".match?(RegExp("`S")).type!(Map).empty?()
+        "Z".match?(RegExp("`S")).type!(Map).empty?()
+        "A".match?(RegExp("`S")).type!(Map).empty?()
+        ".".match?(RegExp("`S")).type!(Map).empty?()
+        "_".match?(RegExp("`S")).type!(Map).empty?()
+        "\0000".match?(RegExp("`S")).type!(Map).empty?()
+        "\ffff".match?(RegExp("`S")).type!(Map).empty?()
+        "/".match?(RegExp("`S")).type!(Map).empty?()
+        ":".match?(RegExp("`S")).type!(Map).empty?()
+        "00".match?(RegExp("`S")).nothing?()
+        "11".match?(RegExp("`S")).nothing?()
+        "99".match?(RegExp("`S")).nothing?()
+        "aa".match?(RegExp("`S")).nothing?()
+        "  ".match?(RegExp("`S")).nothing?()
+        "\t\t".match?(RegExp("`S")).nothing?()
+        "\n\n".match?(RegExp("`S")).nothing?()
+        "\n\t ".match?(RegExp("`S")).nothing?()
+        "0".match?(RegExp("`S")).type!(Map).empty?()
+        "1".match?(RegExp("`S")).type!(Map).empty?()
+        "8".match?(RegExp("`S")).type!(Map).empty?()
+        "9".match?(RegExp("`S")).type!(Map).empty?()
+        " ".match?(RegExp("`S")).nothing?()
+        "\t".match?(RegExp("`S")).nothing?()
+        "\n".match?(RegExp("`S")).nothing?()
+        "".match?(RegExp("`w")).nothing?()
+    for :(char Int = charToInt('a')) char <= charToInt('z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`w")).type!(Map).empty?()
+    for :(char Int = charToInt('A')) char <= charToInt('Z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`w")).type!(Map).empty?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`w")).type!(Map).empty?()
+    test: ok, errorsCoordinates
+        "_".match?(RegExp("`w")).type!(Map).empty?()
+        ".".match?(RegExp("`w")).nothing?()
+        "\0000".match?(RegExp("`w")).nothing?()
+        "\ffff".match?(RegExp("`w")).nothing?()
+        "/".match?(RegExp("`w")).nothing?()
+        ":".match?(RegExp("`w")).nothing?()
+        "00".match?(RegExp("`w")).nothing?()
+        "11".match?(RegExp("`w")).nothing?()
+        "99".match?(RegExp("`w")).nothing?()
+        "aa".match?(RegExp("`w")).nothing?()
+        "  ".match?(RegExp("`w")).nothing?()
+        "\t\t".match?(RegExp("`w")).nothing?()
+        "\n\n".match?(RegExp("`w")).nothing?()
+        "\n\t ".match?(RegExp("`w")).nothing?()
+        " ".match?(RegExp("`w")).nothing?()
+        "\t".match?(RegExp("`w")).nothing?()
+        "\n".match?(RegExp("`w")).nothing?()
+        "".match?(RegExp("`W")).nothing?()
+    for :(char Int = charToInt('a')) char <= charToInt('z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`W")).nothing?()
+    for :(char Int = charToInt('A')) char <= charToInt('Z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`W")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("`W")).nothing?()
+    test: ok, errorsCoordinates
+        "_".match?(RegExp("`W")).nothing?()
+        ".".match?(RegExp("`W")).type!(Map).empty?()
+        "\0000".match?(RegExp("`W")).type!(Map).empty?()
+        "\ffff".match?(RegExp("`W")).type!(Map).empty?()
+        "/".match?(RegExp("`W")).type!(Map).empty?()
+        ":".match?(RegExp("`W")).type!(Map).empty?()
+        "00".match?(RegExp("`W")).nothing?()
+        "11".match?(RegExp("`W")).nothing?()
+        "99".match?(RegExp("`W")).nothing?()
+        "aa".match?(RegExp("`W")).nothing?()
+        "  ".match?(RegExp("`W")).nothing?()
+        "\t\t".match?(RegExp("`W")).nothing?()
+        "\n\n".match?(RegExp("`W")).nothing?()
+        "\n\t ".match?(RegExp("`W")).nothing?()
+        " ".match?(RegExp("`W")).type!(Map).empty?()
+        "\t".match?(RegExp("`W")).type!(Map).empty?()
+        "\n".match?(RegExp("`W")).type!(Map).empty?()
+        "".match?(RegExp("#\0000")).nothing?()
+        "".match?(RegExp("#1")).nothing?()
+        "1".match?(RegExp("#1")).type!(Map).empty?()
+        "2".match?(RegExp("#2")).type!(Map).empty?()
+        "\0000".match?(RegExp("#\0000")).type!(Map).empty?()
+        "#".match?(RegExp("##")).type!(Map).empty?()
+        "\\".match?(RegExp("#\\")).type!(Map).empty?()
+        "1".match?(RegExp("#2")).nothing?()
+        "#".match?(RegExp("#\0000")).nothing?()
+        "#".match?(RegExp("#a")).nothing?()
+        "".match?(RegExp("1")).nothing?()
+        "1".match?(RegExp("1")).type!(Map).empty?()
+        "a".match?(RegExp("a")).type!(Map).empty?()
+        ".".match?(RegExp("a")).nothing?()
+        "a".match?(RegExp("1")).nothing?()
+        "11".match?(RegExp("1")).nothing?()
+        "1".match?(RegExp("a")).nothing?()
+        "\0000".match?(RegExp("\0001")).nothing?()
+        "\0000".match?(RegExp("\0000")).type!(Map).empty?()
+        "".match?(RegExp("[`d]")).nothing?()
+        "a".match?(RegExp("[`d]")).nothing?()
+        "z".match?(RegExp("[`d]")).nothing?()
+        "Z".match?(RegExp("[`d]")).nothing?()
+        "A".match?(RegExp("[`d]")).nothing?()
+        ".".match?(RegExp("[`d]")).nothing?()
+        "_".match?(RegExp("[`d]")).nothing?()
+        "\0000".match?(RegExp("[`d]")).nothing?()
+        "\ffff".match?(RegExp("[`d]")).nothing?()
+        "/".match?(RegExp("[`d]")).nothing?()
+        ":".match?(RegExp("[`d]")).nothing?()
+        "00".match?(RegExp("[`d]")).nothing?()
+        "11".match?(RegExp("[`d]")).nothing?()
+        "99".match?(RegExp("[`d]")).nothing?()
+        "aa".match?(RegExp("[`d]")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[`d]")).type!(Map).empty?()
+    test: ok, errorsCoordinates
+        "".match?(RegExp("[^`d]")).nothing?()
+        "a".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "z".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "Z".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "A".match?(RegExp("[^`d]")).type!(Map).empty?()
+        ".".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "_".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "\ffff".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "/".match?(RegExp("[^`d]")).type!(Map).empty?()
+        ":".match?(RegExp("[^`d]")).type!(Map).empty?()
+        "00".match?(RegExp("[^`d]")).nothing?()
+        "11".match?(RegExp("[^`d]")).nothing?()
+        "99".match?(RegExp("[^`d]")).nothing?()
+        "aa".match?(RegExp("[^`d]")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^`d]")).nothing?()
+    test: ok, errorsCoordinates
+        "".match?(RegExp("[`s]")).nothing?()
+        "a".match?(RegExp("[`s]")).nothing?()
+        "z".match?(RegExp("[`s]")).nothing?()
+        "Z".match?(RegExp("[`s]")).nothing?()
+        "A".match?(RegExp("[`s]")).nothing?()
+        ".".match?(RegExp("[`s]")).nothing?()
+        "_".match?(RegExp("[`s]")).nothing?()
+        "\0000".match?(RegExp("[`s]")).nothing?()
+        "\ffff".match?(RegExp("[`s]")).nothing?()
+        "/".match?(RegExp("[`s]")).nothing?()
+        ":".match?(RegExp("[`s]")).nothing?()
+        "00".match?(RegExp("[`s]")).nothing?()
+        "11".match?(RegExp("[`s]")).nothing?()
+        "99".match?(RegExp("[`s]")).nothing?()
+        "aa".match?(RegExp("[`s]")).nothing?()
+        "  ".match?(RegExp("[`s]")).nothing?()
+        "\t\t".match?(RegExp("[`s]")).nothing?()
+        "\n\n".match?(RegExp("[`s]")).nothing?()
+        "\n\t ".match?(RegExp("[`s]")).nothing?()
+        "0".match?(RegExp("[`s]")).nothing?()
+        "1".match?(RegExp("[`s]")).nothing?()
+        "8".match?(RegExp("[`s]")).nothing?()
+        "9".match?(RegExp("[`s]")).nothing?()
+        " ".match?(RegExp("[`s]")).type!(Map).empty?()
+        "\t".match?(RegExp("[`s]")).type!(Map).empty?()
+        "\n".match?(RegExp("[`s]")).type!(Map).empty?()
+        "".match?(RegExp("[^`s]")).nothing?()
+        "a".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "z".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "Z".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "A".match?(RegExp("[^`s]")).type!(Map).empty?()
+        ".".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "_".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "\ffff".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "/".match?(RegExp("[^`s]")).type!(Map).empty?()
+        ":".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "00".match?(RegExp("[^`s]")).nothing?()
+        "11".match?(RegExp("[^`s]")).nothing?()
+        "99".match?(RegExp("[^`s]")).nothing?()
+        "aa".match?(RegExp("[^`s]")).nothing?()
+        "  ".match?(RegExp("[^`s]")).nothing?()
+        "\t\t".match?(RegExp("[^`s]")).nothing?()
+        "\n\n".match?(RegExp("[^`s]")).nothing?()
+        "\n\t ".match?(RegExp("[^`s]")).nothing?()
+        "0".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "1".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "8".match?(RegExp("[^`s]")).type!(Map).empty?()
+        "9".match?(RegExp("[^`s]")).type!(Map).empty?()
+        " ".match?(RegExp("[^`s]")).nothing?()
+        "\t".match?(RegExp("[^`s]")).nothing?()
+        "\n".match?(RegExp("[^`s]")).nothing?()
+        "".match?(RegExp("[`w]")).nothing?()
+    for :(char Int = charToInt('a')) char <= charToInt('z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[`w]")).type!(Map).empty?()
+    for :(char Int = charToInt('A')) char <= charToInt('Z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[`w]")).type!(Map).empty?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[`w]")).type!(Map).empty?()
+    test: ok, errorsCoordinates
+        "_".match?(RegExp("[`w]")).type!(Map).empty?()
+        ".".match?(RegExp("[`w]")).nothing?()
+        "\0000".match?(RegExp("[`w]")).nothing?()
+        "\ffff".match?(RegExp("[`w]")).nothing?()
+        "/".match?(RegExp("[`w]")).nothing?()
+        ":".match?(RegExp("[`w]")).nothing?()
+        "00".match?(RegExp("[`w]")).nothing?()
+        "11".match?(RegExp("[`w]")).nothing?()
+        "99".match?(RegExp("[`w]")).nothing?()
+        "aa".match?(RegExp("[`w]")).nothing?()
+        "  ".match?(RegExp("[`w]")).nothing?()
+        "\t\t".match?(RegExp("[`w]")).nothing?()
+        "\n\n".match?(RegExp("[`w]")).nothing?()
+        "\n\t ".match?(RegExp("[`w]")).nothing?()
+        " ".match?(RegExp("[`w]")).nothing?()
+        "\t".match?(RegExp("[`w]")).nothing?()
+        "\n".match?(RegExp("[`w]")).nothing?()
+        "".match?(RegExp("[^`w]")).nothing?()
+    for :(char Int = charToInt('a')) char <= charToInt('z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^`w]")).nothing?()
+    for :(char Int = charToInt('A')) char <= charToInt('Z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^`w]")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^`w]")).nothing?()
+    test: ok, errorsCoordinates
+        "_".match?(RegExp("[^`w]")).nothing?()
+        ".".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "\ffff".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "/".match?(RegExp("[^`w]")).type!(Map).empty?()
+        ":".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "00".match?(RegExp("[^`w]")).nothing?()
+        "11".match?(RegExp("[^`w]")).nothing?()
+        "99".match?(RegExp("[^`w]")).nothing?()
+        "aa".match?(RegExp("[^`w]")).nothing?()
+        "  ".match?(RegExp("[^`w]")).nothing?()
+        "\t\t".match?(RegExp("[^`w]")).nothing?()
+        "\n\n".match?(RegExp("[^`w]")).nothing?()
+        "\n\t ".match?(RegExp("[^`w]")).nothing?()
+        " ".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "\t".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "\n".match?(RegExp("[^`w]")).type!(Map).empty?()
+        "".match?(RegExp("[#\0000]")).nothing?()
+        "".match?(RegExp("[#1]")).nothing?()
+        "1".match?(RegExp("[#1]")).type!(Map).empty?()
+        "2".match?(RegExp("[#2]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[#\0000]")).type!(Map).empty?()
+        "#".match?(RegExp("[##]")).type!(Map).empty?()
+        "\\".match?(RegExp("[#\\]")).type!(Map).empty?()
+        "1".match?(RegExp("[#2]")).nothing?()
+        "#".match?(RegExp("[#\0000]")).nothing?()
+        "#".match?(RegExp("[#a]")).nothing?()
+        "".match?(RegExp("[^#\0000]")).nothing?()
+        "".match?(RegExp("[^#1]")).nothing?()
+        "1".match?(RegExp("[^#1]")).nothing?()
+        "2".match?(RegExp("[^#2]")).nothing?()
+        "\0000".match?(RegExp("[^#\0000]")).nothing?()
+        "#".match?(RegExp("[^##]")).nothing?()
+        "\\".match?(RegExp("[^#\\]")).nothing?()
+        "1".match?(RegExp("[^#2]")).type!(Map).empty?()
+        "#".match?(RegExp("[^#\0000]")).type!(Map).empty?()
+        "#".match?(RegExp("[^#a]")).type!(Map).empty?()
+        "".match?(RegExp("[1]")).nothing?()
+        "1".match?(RegExp("[1]")).type!(Map).empty?()
+        "a".match?(RegExp("[a]")).type!(Map).empty?()
+        ".".match?(RegExp("[a]")).nothing?()
+        "a".match?(RegExp("[1]")).nothing?()
+        "11".match?(RegExp("[1]")).nothing?()
+        "1".match?(RegExp("[a]")).nothing?()
+        "\0000".match?(RegExp("[\0001]")).nothing?()
+        "\0000".match?(RegExp("[\0000]")).type!(Map).empty?()
+        "".match?(RegExp("[^1]")).nothing?()
+        "1".match?(RegExp("[^1]")).nothing?()
+        "a".match?(RegExp("[^a]")).nothing?()
+        ".".match?(RegExp("[^a]")).type!(Map).empty?()
+        "a".match?(RegExp("[^1]")).type!(Map).empty?()
+        "11".match?(RegExp("[^1]")).nothing?()
+        "1".match?(RegExp("[^a]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[^\0001]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[^\0000]")).nothing?()
+        "012".match?(RegExp("[012]")).nothing?()
+        "3".match?(RegExp("[012]")).nothing?()
+        "0".match?(RegExp("[012]")).type!(Map).empty?()
+        "1".match?(RegExp("[012]")).type!(Map).empty?()
+        "2".match?(RegExp("[012]")).type!(Map).empty?()
+        "012".match?(RegExp("[^012]")).nothing?()
+        "3".match?(RegExp("[^012]")).type!(Map).empty?()
+        "0".match?(RegExp("[^012]")).nothing?()
+        "1".match?(RegExp("[^012]")).nothing?()
+        "2".match?(RegExp("[^012]")).nothing?()
+        "012".match?(RegExp("[0-2]")).nothing?()
+        "3".match?(RegExp("[0-2]")).nothing?()
+        "0".match?(RegExp("[0-2]")).type!(Map).empty?()
+        "1".match?(RegExp("[0-2]")).type!(Map).empty?()
+        "2".match?(RegExp("[0-2]")).type!(Map).empty?()
+        "012".match?(RegExp("[^0-2]")).nothing?()
+        "3".match?(RegExp("[^0-2]")).type!(Map).empty?()
+        "0".match?(RegExp("[^0-2]")).nothing?()
+        "1".match?(RegExp("[^0-2]")).nothing?()
+        "2".match?(RegExp("[^0-2]")).nothing?()
+        "012".match?(RegExp("[#0-2]")).nothing?()
+        "3".match?(RegExp("[#0-2]")).nothing?()
+        "0".match?(RegExp("[#0-2]")).type!(Map).empty?()
+        "1".match?(RegExp("[#0-2]")).type!(Map).empty?()
+        "2".match?(RegExp("[#0-2]")).type!(Map).empty?()
+        "012".match?(RegExp("[^#0-2]")).nothing?()
+        "3".match?(RegExp("[^#0-2]")).type!(Map).empty?()
+        "0".match?(RegExp("[^#0-2]")).nothing?()
+        "1".match?(RegExp("[^#0-2]")).nothing?()
+        "2".match?(RegExp("[^#0-2]")).nothing?()
+        "012".match?(RegExp("[#0-#2]")).nothing?()
+        "3".match?(RegExp("[#0-#2]")).nothing?()
+        "0".match?(RegExp("[#0-#2]")).type!(Map).empty?()
+        "1".match?(RegExp("[#0-#2]")).type!(Map).empty?()
+        "2".match?(RegExp("[#0-#2]")).type!(Map).empty?()
+        "012".match?(RegExp("[^#0-#2]")).nothing?()
+        "3".match?(RegExp("[^#0-#2]")).type!(Map).empty?()
+        "0".match?(RegExp("[^#0-#2]")).nothing?()
+        "1".match?(RegExp("[^#0-#2]")).nothing?()
+        "2".match?(RegExp("[^#0-#2]")).nothing?()
+        "012".match?(RegExp("[0-#2]")).nothing?()
+        "3".match?(RegExp("[0-#2]")).nothing?()
+        "0".match?(RegExp("[0-#2]")).type!(Map).empty?()
+        "1".match?(RegExp("[0-#2]")).type!(Map).empty?()
+        "2".match?(RegExp("[0-#2]")).type!(Map).empty?()
+        "012".match?(RegExp("[^0-#2]")).nothing?()
+        "3".match?(RegExp("[^0-#2]")).type!(Map).empty?()
+        "0".match?(RegExp("[^0-#2]")).nothing?()
+        "1".match?(RegExp("[^0-#2]")).nothing?()
+        "2".match?(RegExp("[^0-#2]")).nothing?()
+        "".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+    for :(char Int = charToInt('a')) char <= charToInt('z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[a-zA-Z0-9_]")).type!(Map).empty?()
+    for :(char Int = charToInt('A')) char <= charToInt('Z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[a-zA-Z0-9_]")).type!(Map).empty?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[a-zA-Z0-9_]")).type!(Map).empty?()
+    test: ok, errorsCoordinates
+        "_".match?(RegExp("[a-zA-Z0-9_]")).type!(Map).empty?()
+        ".".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\0000".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\ffff".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "/".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        ":".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "00".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "11".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "99".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "aa".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "  ".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\t\t".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\n\n".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\n\t ".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        " ".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\t".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "\n".match?(RegExp("[a-zA-Z0-9_]")).nothing?()
+        "".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+    for :(char Int = charToInt('a')) char <= charToInt('z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+    for :(char Int = charToInt('A')) char <= charToInt('Z'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+    for :(char Int = charToInt('0')) char <= charToInt('9'); char++
+        test: ok, errorsCoordinates
+            intToChar(char).toString().match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+    test: ok, errorsCoordinates
+        "_".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        ".".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "\0000".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "\ffff".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "/".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        ":".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "00".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "11".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "99".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "aa".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "  ".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "\t\t".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "\n\n".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        "\n\t ".match?(RegExp("[^a-zA-Z0-9_]")).nothing?()
+        " ".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "\t".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "\n".match?(RegExp("[^a-zA-Z0-9_]")).type!(Map).empty?()
+        "a1b2vv4".match?(RegExp("a[^2]`w[123][^`d]`w[0-5]")).type!(Map).empty?()
+        RegExp("[") : error_invalidRegExp
+        RegExp("[") : error_invalidRegExp
+        RegExp("[^") : error_invalidRegExp
+        RegExp("[^") : error_invalidRegExp
+        RegExp("#") : error_invalidRegExp
+        RegExp("#") : error_invalidRegExp
+        RegExp("[]") : error_invalidRegExp
+        RegExp("[]") : error_invalidRegExp
+        RegExp("[^]") : error_invalidRegExp
+        RegExp("[^]") : error_invalidRegExp
+        RegExp("[#]") : error_invalidRegExp
+        RegExp("[#]") : error_invalidRegExp
+        RegExp("[^#]") : error_invalidRegExp
+        RegExp("[^#]") : error_invalidRegExp
+        RegExp("`") : error_invalidRegExp
+        RegExp("`") : error_invalidRegExp
+        RegExp("[`]") : error_invalidRegExp
+        RegExp("[`]") : error_invalidRegExp
+        RegExp("[^`]") : error_invalidRegExp
+        RegExp("[^`]") : error_invalidRegExp
+        RegExp("[.]") : error_invalidRegExp
+        RegExp("[.]") : error_invalidRegExp
+        RegExp("[^.]") : error_invalidRegExp
+        RegExp("[^.]") : error_invalidRegExp
+        RegExp("`a") : error_invalidRegExp
+        RegExp("`a") : error_invalidRegExp
+        RegExp("[`a]") : error_invalidRegExp
+        RegExp("[`a]") : error_invalidRegExp
+        RegExp("[^`a]") : error_invalidRegExp
+        RegExp("[^`a]") : error_invalidRegExp
+        RegExp("(") : error_invalidRegExp
+        RegExp("(") : error_invalidRegExp
+        RegExp("[(]") : error_invalidRegExp
+        RegExp("[(]") : error_invalidRegExp
+        RegExp("[^(]") : error_invalidRegExp
+        RegExp("[^(]") : error_invalidRegExp
+        RegExp(")") : error_invalidRegExp
+        RegExp(")") : error_invalidRegExp
+        RegExp("[)]") : error_invalidRegExp
+        RegExp("[)]") : error_invalidRegExp
+        RegExp("[^)]") : error_invalidRegExp
+        RegExp("[^)]") : error_invalidRegExp
+        RegExp("[[]") : error_invalidRegExp
+        RegExp("[^[]") : error_invalidRegExp
+        RegExp("[]]") : error_invalidRegExp
+        RegExp("[^]]") : error_invalidRegExp
+        RegExp("[[]") : error_invalidRegExp
+        RegExp("[^[]") : error_invalidRegExp
+        RegExp("[]]") : error_invalidRegExp
+        RegExp("[]]") : error_invalidRegExp
+        RegExp("[^]]") : error_invalidRegExp
+        RegExp("[^]]") : error_invalidRegExp
+        RegExp("[^^]") : error_invalidRegExp
+        RegExp("[^^]") : error_invalidRegExp
+        RegExp("[^^1]") : error_invalidRegExp
+        RegExp("[^^1]") : error_invalidRegExp
+        RegExp("[{]") : error_invalidRegExp
+        RegExp("[{]") : error_invalidRegExp
+        RegExp("[^{]") : error_invalidRegExp
+        RegExp("[^{]") : error_invalidRegExp
+        RegExp("[}]") : error_invalidRegExp
+        RegExp("[}]") : error_invalidRegExp
+        RegExp("[^}]") : error_invalidRegExp
+        RegExp("[^}]") : error_invalidRegExp
+        RegExp("[$]") : error_invalidRegExp
+        RegExp("[$]") : error_invalidRegExp
+        RegExp("[^$]") : error_invalidRegExp
+        RegExp("[^$]") : error_invalidRegExp
+        RegExp("[|]") : error_invalidRegExp
+        RegExp("[|]") : error_invalidRegExp
+        RegExp("[^|]") : error_invalidRegExp
+        RegExp("[^|]") : error_invalidRegExp
+        RegExp("[?]") : error_invalidRegExp
+        RegExp("[?]") : error_invalidRegExp
+        RegExp("[^?]") : error_invalidRegExp
+        RegExp("[^?]") : error_invalidRegExp
+        RegExp("[+]") : error_invalidRegExp
+        RegExp("[+]") : error_invalidRegExp
+        RegExp("[^+]") : error_invalidRegExp
+        RegExp("[^+]") : error_invalidRegExp
+        RegExp("[*]") : error_invalidRegExp
+        RegExp("[*]") : error_invalidRegExp
+        RegExp("[^*]") : error_invalidRegExp
+        RegExp("[^*]") : error_invalidRegExp
+        RegExp("[-]") : error_invalidRegExp
+        RegExp("[-]") : error_invalidRegExp
+        RegExp("[^-]") : error_invalidRegExp
+        RegExp("[^-]") : error_invalidRegExp
+        RegExp("[1-]") : error_invalidRegExp
+        RegExp("[1-]") : error_invalidRegExp
+        RegExp("[^1-]") : error_invalidRegExp
+        RegExp("[^1-]") : error_invalidRegExp
+        RegExp("[-1]") : error_invalidRegExp
+        RegExp("[-1]") : error_invalidRegExp
+        RegExp("[^-1]") : error_invalidRegExp
+        RegExp("[^-1]") : error_invalidRegExp
+
+#noinline
+def testRegExp_ignored(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("(??1)")).nothing?()
+        "1".match?(RegExp("(??1)")).nothing?()
+        "1".match?(RegExp("(??1)1")).type!(Map).empty?()
+        "1".match?(RegExp("(??1)`d")).type!(Map).empty?()
+        "something".match?(RegExp("(??some)thing")).nothing?()
+        "something".match?(RegExp("(??some)something")).type!(Map).empty?()
+        "somebody".match?(RegExp("(??some)something")).nothing?()
+        RegExp("(??)") : error_invalidRegExp
+        RegExp("(??") : error_invalidRegExp
+        RegExp("(??abs") : error_invalidRegExp
+
+#noinline
+def testRegExp_negative(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("(?:1)")).type!(Map).empty?()
+        "2".match?(RegExp("(?:1)")).nothing?()
+        "2".match?(RegExp("(?:1)2")).type!(Map).empty?()
+        "2".match?(RegExp("(?:2)2")).nothing?()
+        "something".match?(RegExp("(?:somebody)something")).type!(Map).empty?()
+        "some".match?(RegExp("(?:somebody)some")).type!(Map).empty?()
+        "something".match?(RegExp("(?:something)something")).nothing?()
+        "something".match?(RegExp("(?:some)thing")).nothing?()
+        "somthing".match?(RegExp("(?:some)thing")).nothing?()
+        "thing".match?(RegExp("(?:some)thing")).type!(Map).empty?()
+        "thing".match?(RegExp("(?:some)(?:thingf)thing")).type!(Map).empty?()
+        "thing".match?(RegExp("(?:some)(?:thing)thing")).nothing?()
+        RegExp("(?:)") : error_invalidRegExp
+        RegExp("(?:") : error_invalidRegExp
+        RegExp("(?:abs") : error_invalidRegExp
+
+#noinline
+def testRegExp_wordBoundary(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("`b")).nothing?()
+        "1".match?(RegExp("`b")).nothing?()
+        "12".match?(RegExp("`b")).nothing?()
+        "a".match?(RegExp("a`b")).type!(Map).empty?()
+        "a".match?(RegExp("`ba")).type!(Map).empty?()
+        "a".match?(RegExp("`ba`b")).type!(Map).empty?()
+        "aa".match?(RegExp("a`ba")).nothing?()
+        "aa".match?(RegExp("a`ba`b")).nothing?()
+        "aa".match?(RegExp("`ba`ba")).nothing?()
+        "some".match?(RegExp("`bsome")).type!(Map).empty?()
+        "some some".match?(RegExp("`bsome`b `bsome`b")).type!(Map).empty?()
+        "some".match?(RegExp("some`b")).type!(Map).empty?()
+        "some".match?(RegExp("`bsome`b")).type!(Map).empty?()
+        "some".match?(RegExp("s`bome")).nothing?()
+        "some".match?(RegExp("so`bme")).nothing?()
+        "some".match?(RegExp("s`bo`bm`be")).nothing?()
+
+#noinline
+def testRegExp_nonWordBoundary(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("`B")).type!(Map).empty?()
+        "1".match?(RegExp("`B")).nothing?()
+        "12".match?(RegExp("`B")).nothing?()
+        "a".match?(RegExp("a`B")).nothing?()
+        "a".match?(RegExp("`Ba")).nothing?()
+        "a".match?(RegExp("`Ba`B")).nothing?()
+        "aa".match?(RegExp("a`Ba")).type!(Map).empty?()
+        "aa".match?(RegExp("a`Ba`B")).nothing?()
+        "aa".match?(RegExp("`Ba`Ba")).nothing?()
+        "some".match?(RegExp("`Bsome")).nothing?()
+        "some".match?(RegExp("some`B")).nothing?()
+        "some".match?(RegExp("`Bsome`B")).nothing?()
+        "some some".match?(RegExp("`Bsome some")).nothing?()
+        "some some".match?(RegExp("some`B some")).nothing?()
+        "some some".match?(RegExp("some `Bsome")).nothing?()
+        "some some".match?(RegExp("some some`B")).nothing?()
+        "some".match?(RegExp("s`Bome")).type!(Map).empty?()
+        "some".match?(RegExp("so`Bme")).type!(Map).empty?()
+        "some".match?(RegExp("s`Bo`Bm`Be")).type!(Map).empty?()
+
+#noinline
+def testRegExp_string(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("1")).nothing?()
+        "0".match?(RegExp("1")).nothing?()
+        "11".match?(RegExp("1")).nothing?()
+        "12".match?(RegExp("123")).nothing?()
+        "23".match?(RegExp("123")).nothing?()
+        "1234".match?(RegExp("123")).nothing?()
+        "123".match?(RegExp("123")).type!(Map).empty?()
+        "some some".match?(RegExp("some some")).type!(Map).empty?()
+        "some 123".match?(RegExp("some 123")).type!(Map).empty?()
+        "some 123".match?(RegExp("some 1230")).nothing?()
+        "some 1230".match?(RegExp("some 123")).nothing?()
+
+#noinline
+def testRegExp_repeat(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("1{0,1}")).type!(Map).empty?()
+        "".match?(RegExp("1{,1}")).type!(Map).empty?()
+        "".match?(RegExp("1{1,}")).nothing?()
+        "".match?(RegExp("1{1}")).nothing?()
+        "1".match?(RegExp("1{0,1}")).type!(Map).empty?()
+        "1".match?(RegExp("1{,1}")).type!(Map).empty?()
+        "1".match?(RegExp("1{1,}")).type!(Map).empty?()
+        "1".match?(RegExp("1{1}")).type!(Map).empty?()
+        "11".match?(RegExp("1{0,1}")).nothing?()
+        "11".match?(RegExp("1{,1}")).nothing?()
+        "11".match?(RegExp("1{1,}")).type!(Map).empty?()
+        "11".match?(RegExp("1{1}")).nothing?()
+        "11".match?(RegExp("1{0,2}")).type!(Map).empty?()
+        "11".match?(RegExp("1{1,2}")).type!(Map).empty?()
+        "11".match?(RegExp("1{2,2}")).type!(Map).empty?()
+        "11".match?(RegExp("1{2,3}")).type!(Map).empty?()
+        "11".match?(RegExp("1{0,3}")).type!(Map).empty?()
+        "11".match?(RegExp("1{,2}")).type!(Map).empty?()
+        "11".match?(RegExp("1{,3}")).type!(Map).empty?()
+        "11".match?(RegExp("1{,4}")).type!(Map).empty?()
+        "11".match?(RegExp("1{1,}")).type!(Map).empty?()
+        "111".match?(RegExp("1{1,}")).type!(Map).empty?()
+        "1111".match?(RegExp("1{1,}")).type!(Map).empty?()
+        "11".match?(RegExp("1{2}")).type!(Map).empty?()
+        "111".match?(RegExp("1{3}")).type!(Map).empty?()
+        "1111".match?(RegExp("1{4}")).type!(Map).empty?()
+        "12233355555".match?(RegExp("1{1,1}2{2}3{,3}4{0,}5{5,}")).type!(Map).empty?()
+        "".match?(RegExp("1*")).type!(Map).empty?()
+        "".match?(RegExp("1?")).type!(Map).empty?()
+        "".match?(RegExp("1+")).nothing?()
+        "1".match?(RegExp("1?")).type!(Map).empty?()
+        "1".match?(RegExp("1+")).type!(Map).empty?()
+        "1".match?(RegExp("1*")).type!(Map).empty?()
+        "11".match?(RegExp("1?")).nothing?()
+        "11".match?(RegExp("1+")).type!(Map).empty?()
+        "11".match?(RegExp("1*")).type!(Map).empty?()
+        "111".match?(RegExp("1?1?1?")).type!(Map).empty?()
+        "1111".match?(RegExp("112*11")).type!(Map).empty?()
+        "12233355555".match?(RegExp("1+2*3*4*5+")).type!(Map).empty?()
+        "12233355555".match?(RegExp("1+2*3*4+5+")).nothing?()
+        "12233355555".match?(RegExp("1*2+3+4+5+")).nothing?()
+        "111333".match?(RegExp("1+2?3+")).type!(Map).empty?()
+        "111333".match?(RegExp("1+2*3+")).type!(Map).empty?()
+        "111222333".match?(RegExp("1112+3+")).type!(Map).empty?()
+        "111111".match?(RegExp("111{2}")).nothing?()
+        RegExp("{") : error_invalidRegExp
+        RegExp("}") : error_invalidRegExp
+        RegExp("{}") : error_invalidRegExp
+        RegExp("1{}") : error_invalidRegExp
+        RegExp("{1,}") : error_invalidRegExp
+        RegExp("{,1}") : error_invalidRegExp
+        RegExp("{1}") : error_invalidRegExp
+        RegExp("{+}") : error_invalidRegExp
+        RegExp("{1,1}") : error_invalidRegExp
+        RegExp("{1,2}") : error_invalidRegExp
+        RegExp("1{1,") : error_invalidRegExp
+        RegExp("1{") : error_invalidRegExp
+        RegExp("1}") : error_invalidRegExp
+        RegExp("1{,2") : error_invalidRegExp
+        RegExp("1{,2") : error_invalidRegExp
+        "11111".match?(RegExp("(??1)*")) : error_pointlessRepetitions
+        "11111".match?(RegExp("^*")) : error_pointlessRepetitions
+
+#noinline
+def testRegExp_stringBegin(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("^")).type!(Map).empty?()
+        "".match?(RegExp("^a")).nothing?()
+        "a".match?(RegExp("^a")).type!(Map).empty?()
+        "aa".match?(RegExp("a^a")).nothing?()
+        "aa".match?(RegExp("^aa")).type!(Map).empty?()
+        "aa".match?(RegExp("aa^")).nothing?()
+        "a".match?(RegExp("^`w")).type!(Map).empty?()
+        "some".match?(RegExp("^some")).type!(Map).empty?()
+
+#noinline
+def testRegExp_stringEnd(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("$")).type!(Map).empty?()
+        "".match?(RegExp("$a")).nothing?()
+        "a".match?(RegExp("a$")).type!(Map).empty?()
+        "aa".match?(RegExp("a$a")).nothing?()
+        "aa".match?(RegExp("aa$")).type!(Map).empty?()
+        "aa".match?(RegExp("$aa")).nothing?()
+        "a".match?(RegExp("`w$")).type!(Map).empty?()
+        "some".match?(RegExp("some$")).type!(Map).empty?()
+
+#noinline
+def testRegExp_namedPattern(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("(?(name)`w{0,3})")).type!(Map).length~() == 1
+        "".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"] == ""
+        "1".match?(RegExp("(?(name)`w{0,3})")).type!(Map).length~() == 1
+        "1".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"] == "1"
+        "1we".match?(RegExp("(?(name)`w{0,3})")).type!(Map).length~() == 1
+        "1we".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"] == "1we"
+        "1we3ew".match?(RegExp("(?(name)`w{1,3})+")).type!(Map).length~() == 1
+        "1we3ew".match?(RegExp("(?(name)`w{1,3})+")).type!(Map)["name"] == "3ew"
+        "1we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map).length~() == 1
+        "1we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map)["name"] == "ew"
+        "1we3ew".match?(RegExp("(?(name)`W{1,2})+")).nothing?()
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map).length~() == 4
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n0"] == ""
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n1"] == "1"
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n2"] == "22"
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n3"] == ""
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map).length~() == 8
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n0"] == "12"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n1"] == "22"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n2"] == "3"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n3"] == "44"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n4"] == "555"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n5"] == "6"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n6"] == "77"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n7"] == "8"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map).length~() == 3
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n0"] == "1"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n1"] == "2"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n2"] == "123"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map).length~() == 4
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n0"] == "1"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n1"] == "1"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n2"] == "123"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n3"] == "1"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map).length~() == 3
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n0"] == "1"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n1"] == "2"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n2"] == "123"
+        "`1~a bl \0000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\0000) (?(n1)(1234))")).type!(Map).length~() == 2
+        "`1~a bl \0000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\0000) (?(n1)(1234))")).type!(Map)["n0"] == "`1~a bl \0000"
+        "`1~a bl \0000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\0000) (?(n1)(1234))")).type!(Map)["n1"] == "1234"
+        RegExp("(?(") : error_invalidRegExp
+        RegExp("(?()1)") : error_invalidRegExp
+        RegExp("(?()1") : error_invalidRegExp
+        RegExp("(?())") : error_invalidRegExp
+        RegExp("(?(n))") : error_invalidRegExp
+        RegExp("(?()") : error_invalidRegExp
+        RegExp("(?()())") : error_invalidRegExp
+        RegExp("(?(n)())") : error_invalidRegExp
+
+#noinline
+def testRegExp_ifPattern(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("(?`(name=(`w*))(1)(2))")).nothing?()
+        "1".match?(RegExp("(?`(name=(`w*))(1)(2))")).nothing?()
+        "2".match?(RegExp("(?`(name=(`w*))(1)(2))")).nothing?()
+        "12".match?(RegExp("(?`(name=(`w*))(1)(2))")).nothing?()
+        "12".match?(RegExp("(?(name)1)(?`(name=(1))(1)(2))")).nothing?()
+        "12".match?(RegExp("(?(name)1)(?`(name=(1))(2)(1))")).type!(Map).length~() == 1
+        "12".match?(RegExp("(?(name)1)(?`(name=(3))(1)(2))")).type!(Map).length~() == 1
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map).length~() == 2
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["key"] == "12"
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["value"] == "13"
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))(^)($))")).nothing?()
+        RegExp("(?`(key=(12))(^)())") : error_invalidRegExp
+        RegExp("(?`(key=(12))()())") : error_invalidRegExp
+        RegExp("(?`(key=(12))()($))") : error_invalidRegExp
+        RegExp("(?`(key=(12))()()") : error_invalidRegExp
+        RegExp("(?`(key=(12))()))") : error_invalidRegExp
+        RegExp("(?`") : error_invalidRegExp
+        RegExp("(?`(") : error_invalidRegExp
+        RegExp("(?`(sda") : error_invalidRegExp
+        RegExp("(?`(sda=") : error_invalidRegExp
+        RegExp("(?`(sda=(") : error_invalidRegExp
+        RegExp("(?`(sda(") : error_invalidRegExp
+        RegExp("(?`(sda)") : error_invalidRegExp
+        RegExp("(?`(sda=())()()") : error_invalidRegExp
+        RegExp("(?`(=())()()") : error_invalidRegExp
+        RegExp("(?`(=())(a)(a)") : error_invalidRegExp
+
+#noinline
+def testRegExp_namedString(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("`(name)")).nothing?()
+        "1".match?(RegExp("`(name)")).nothing?()
+        "name".match?(RegExp("`(name)")).nothing?()
+        "12 = 12".match?(RegExp("(?(key)`w+)`s*=`s*`(key)")).type!(Map).length~() == 1
+        "12 = 1212+".match?(RegExp("(?(key)`w+)`s*=`s*`(key)`(key)#+")).type!(Map).length~() == 1
+        "12 = 212+".match?(RegExp("(?(key)`w+)`s*=`s*`(key)`(key)#+")).nothing?()
+        "123123".match?(RegExp("(?(name)`d{3})`(name)")).type!(Map).length~() == 1
+        RegExp("`(") : error_invalidRegExp
+        RegExp("`()") : error_invalidRegExp
+
+#noinline
+def testRegExp_or(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("(1)|(2)")).nothing?()
+        "3".match?(RegExp("(1)|(2)")).nothing?()
+        "1".match?(RegExp("(1)|(2)")).type!(Map).empty?()
+        "2".match?(RegExp("(1)|(2)")).type!(Map).empty?()
+        "something".match?(RegExp("(something)|(somebody)")).type!(Map).empty?()
+        "somebody".match?(RegExp("(something)|(somebody)")).type!(Map).empty?()
+        "some".match?(RegExp("(something)|(somebody)")).nothing?()
+        "somethingsomebody".match?(RegExp("(something)|(somebody)(something)|(somebody)")).type!(Map).empty?()
+        "somebodysomething".match?(RegExp("(something)|(somebody)(something)|(somebody)")).type!(Map).empty?()
+        RegExp("|") : error_invalidRegExp
+        RegExp("||") : error_invalidRegExp
+        RegExp("(1)||(2)") : error_invalidRegExp
+        RegExp("()|(2)") : error_invalidRegExp
+        RegExp("()|()") : error_invalidRegExp
+        RegExp("(1)|()") : error_invalidRegExp
+        RegExp("(|()") : error_invalidRegExp
+        RegExp(")|(1)") : error_invalidRegExp
+
+#noinline
+def testRegExp_regExp(write ok Int, write errorsCoordinates List)
+    test: ok, errorsCoordinates
+        "".match?(RegExp("(1)")).nothing?()
+        "".match?(RegExp("$^")).type!(Map).empty?()
+        "".match?(RegExp("^$")).type!(Map).empty?()
+        "".match?(RegExp("^")).type!(Map).empty?()
+        "".match?(RegExp("$")).type!(Map).empty?()
+        "11".match?(RegExp("(1)")).nothing?()
+        "1".match?(RegExp("(1)")).type!(Map).empty?()
+        "11".match?(RegExp("(1)(1)")).type!(Map).empty?()
+        "12".match?(RegExp("(1)(2)")).type!(Map).empty?()
+        RegExp("(()") : error_invalidRegExp
+        RegExp("())") : error_invalidRegExp
+        RegExp("(") : error_invalidRegExp
+        RegExp("(1") : error_invalidRegExp
+        RegExp(")") : error_invalidRegExp
+        RegExp("1)") : error_invalidRegExp
+        RegExp(")1") : error_invalidRegExp
+        RegExp("`]") : error_invalidRegExp
+        RegExp("`)") : error_invalidRegExp
+        RegExp("`z") : error_invalidRegExp
+        RegExp("}") : error_invalidRegExp
+        RegExp("]") : error_invalidRegExp
+        RegExp("{]}") : error_invalidRegExp

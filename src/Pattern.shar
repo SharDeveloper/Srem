@@ -1,0 +1,4 @@
+module Srem
+
+group Pattern
+    patternMatch?(String, This,  write Int, write Map) <>String

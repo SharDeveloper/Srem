@@ -1,0 +1,87 @@
+module Srem
+
+// {min,max} - count >= min && count <= max
+// {x}        - {x,x}
+// {,x}       - {0,x}
+// {x,}       - {x,9223372036854775807}
+// char?      - char{0,1}
+// (pattern)? - (pattern){0,1}
+// char+      - char{1,9223372036854775807}
+// (pattern)+ - (pattern){1,9223372036854775807}
+// char*      - char{0,9223372036854775807}
+// (pattern)* - (pattern){0,9223372036854775807}
+type RepeatPattern
+    // pattern              $Any
+    // minCount, maxCount Int
+
+attach RepeatPattern to FieldPattern
+    #alwaysinline
+    def pattern~(pattern RepeatPattern) $Any
+        return pattern.typeGetItem(0)
+
+attach RepeatPattern to FieldMinCount
+    #alwaysinline
+    def minCount~(pattern RepeatPattern) Int
+        return pattern.typeGetItem(1)
+
+attach RepeatPattern to FieldMaxCount
+    #alwaysinline
+    def maxCount~(pattern RepeatPattern) Int
+        return pattern.typeGetItem(2)
+
+#alwaysinline
+def RepeatPattern(pattern $Any, minCount, maxCount Int) RepeatPattern
+    return RepeatPattern.fromList({pattern, minCount, maxCount})
+
+def readRepeatPattern(regExp String, write charIndex Int, pattern $Any) RepeatPattern
+    charIndex++
+    const separatorOrEndIndex <>Int = regExp.lookAnyFromAtoB(",}", charIndex, regExp.length~())
+    if separatorOrEndIndex.nothing?()
+        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    var min Int = -1
+    var max Int = -1
+    if regExp[separatorOrEndIndex] == ','
+        const separatorIndex Int = separatorOrEndIndex
+        const endIndex <>Int = regExp.lookFromAtoB('}', separatorIndex + 1, regExp.length~())
+        if endIndex.nothing?()
+            throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", separatorIndex + 1)
+        const minAsString String = regExp[charIndex:separatorIndex]
+        const maxAsString String = regExp[separatorIndex + 1:endIndex]
+        try
+            min = minAsString.empty?().select(0, Int.fromString(minAsString))
+            charIndex = separatorIndex + 1
+            max = maxAsString.empty?().select(9223372036854775807, Int.fromString(maxAsString))
+            charIndex = endIndex
+        catch
+            nothing
+    else
+        const endIndex Int = separatorOrEndIndex
+        const count String = regExp[charIndex:endIndex]
+        try
+            min = Int.fromString(count)
+            max = min
+            charIndex = endIndex
+        catch
+            nothing
+    if (min | max) <= 0 || min > max
+        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    return RepeatPattern(pattern, min, max)
+
+attach RepeatPattern to Pattern
+    // If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "enum::error_pointlessRepetitions" code.
+    def patternMatch?(string String, pattern RepeatPattern, write charIndex Int, write namedStrings Map) <>String
+        var result String = ""
+        var newCharIndex Int = charIndex
+        var newNamedStrings Map = namedStrings
+        for :(counter Int = 0) counter < pattern.maxCount~(); counter++
+            const matchedString <>String = string.patternMatch?(pattern.pattern~(), newCharIndex, newNamedStrings)
+            if matchedString.nothing?()
+                if counter >= pattern.minCount~()
+                    end counter
+                return nothing
+            if matchedString.empty?()
+                throw(enum::error_pointlessRepetitions, "Pointless repetitions in a regular expression.", newCharIndex)
+            result += matchedString
+        charIndex = newCharIndex
+        namedStrings = newNamedStrings
+        return result

@@ -1,0 +1,19 @@
+module Srem
+
+// `(name) - the value set by the named pattern
+type NamedString
+    // name String
+
+#alwaysinline
+def NamedString(name String) NamedString
+    return NamedString.fromList({name})
+
+attach NamedString to FieldName
+    #alwaysinline
+    def name~(pattern NamedString) String
+        return pattern.typeGetItem(0)
+
+attach NamedString to Pattern
+    def patternMatch?(string String, pattern NamedString, write charIndex Int, write namedStrings Map) <>String
+        const namedString <>String = namedStrings[pattern.name~()]
+        return namedString.nothing?().select(nothing, string.patternMatch?(namedString, charIndex, namedStrings))

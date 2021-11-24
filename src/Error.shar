@@ -1,0 +1,5 @@
+module Srem
+
+export enum
+    error_invalidRegExp
+    error_pointlessRepetitions
