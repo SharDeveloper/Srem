@@ -10,7 +10,7 @@ group FieldMaxCount
     maxCount~(This) Int
 
 group FieldFirstRegExp
-    firstRegExp~(This) RegExp
+    firstRegExp~(This) $Any
 
 group FieldSecondRegExp
     secondRegExp~(This) RegExp

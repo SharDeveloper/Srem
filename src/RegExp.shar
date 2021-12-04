@@ -87,7 +87,7 @@ def readRegExp(regExp String, write charIndex Int) RegExp
             if result.empty?()
                 throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             const firstPattern $Any = result.put(result.length~() - 1, nothing)
-            if !firstPattern.type?(RegExp)
+            if !(firstPattern.type?(RegExp) || firstPattern.type?(OrPattern))
                 throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             charIndex++
             if charIndex == regExp.length~() || regExp[charIndex] != '('

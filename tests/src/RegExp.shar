@@ -870,6 +870,11 @@ def testRegExp_or(write ok Int, write errorsCoordinates List)
         "some".match?(RegExp("(something)|(somebody)")).nothing?()
         "somethingsomebody".match?(RegExp("(something)|(somebody)(something)|(somebody)")).type!(Map).empty?()
         "somebodysomething".match?(RegExp("(something)|(somebody)(something)|(somebody)")).type!(Map).empty?()
+        "123".match?(RegExp("(123)|(0)|(0)|(0)")).type!(Map).empty?()
+        "123".match?(RegExp("(0)|(123)|(0)|(0)")).type!(Map).empty?()
+        "123".match?(RegExp("(0)|(0)|(123)|(0)")).type!(Map).empty?()
+        "123".match?(RegExp("(0)|(0)|(0)|(123)")).type!(Map).empty?()
+        "123".match?(RegExp("(0)|(0)|(0)|(0)")).nothing?()
         RegExp("|") : error_invalidRegExp
         RegExp("||") : error_invalidRegExp
         RegExp("(1)||(2)") : error_invalidRegExp
