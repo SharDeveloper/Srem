@@ -143,6 +143,13 @@ def readRegExp(regExp String, write charIndex Int) RegExp
             end mainLoop
     if result.empty?()
         throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    const lastPattern $Any = result[result.length~() - 1]
+    if lastPattern.type?(RepeatPattern)
+        const repeatPattern RepeatPattern = lastPattern
+        if repeatPattern.pattern~().type?(CharPattern) && repeatPattern.minCount~() == 0 && repeatPattern.maxCount~() == 9223372036854775807
+            const charPattern CharPattern = repeatPattern.pattern~()
+            if charPattern.chars~().empty?() && charPattern.negative?()
+                result.setItem(result.length~() - 1, AllGood())
     return RegExp.fromList(result)
 
 //@The function checks if the string matches the specified regular expression.

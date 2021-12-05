@@ -896,6 +896,8 @@ def testRegExp_regExp(write ok Int, write errorsCoordinates List)
         "1".match?(RegExp("(1)")).type!(Map).empty?()
         "11".match?(RegExp("(1)(1)")).type!(Map).empty?()
         "12".match?(RegExp("(1)(2)")).type!(Map).empty?()
+        "124567890".match?(RegExp("12.*")).type!(Map).empty?()
+        "124567890".match?(RegExp("12(?(r).*)")).type!(Map)["r"] == "4567890"
         RegExp("(()") : error_invalidRegExp
         RegExp("())") : error_invalidRegExp
         RegExp("(") : error_invalidRegExp

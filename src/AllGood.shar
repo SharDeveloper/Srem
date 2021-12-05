@@ -1,0 +1,15 @@
+module Srem
+
+primitive AllGood
+
+#alwaysinline
+def AllGood() AllGood
+    return unsafe_object(AllGood.typeNumber~(), 0)
+
+attach AllGood to Independent
+
+attach AllGood to Pattern
+    def patternMatch?(string String, pattern AllGood, write charIndex Int, write namedStrings Map) <>String
+        const result String = string[charIndex:]
+        charIndex = string.length~()
+        return result
