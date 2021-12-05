@@ -161,18 +161,18 @@ def readRegExp(regExp String, write charIndex Int) RegExp
 export def match?(string String, regExp RegExp) <>Map
     var result <>Map = Map()
     var charIndex Int = 0
-    const matchedString <>String = string.patternMatch?(regExp, charIndex, result)
+    const matchedString <>String = string.patternMatch?(regExp, charIndex, result, false)
     if matchedString.nothing?() || charIndex != string.length~()
         result = nothing
     return result
 
 attach RegExp to Pattern
-    def patternMatch?(string String, pattern RegExp, write charIndex Int, write namedStrings Map) <>String
+    def patternMatch?(string String, pattern RegExp, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         var result String = ""
         var newCharIndex Int = charIndex
         var newNamedStrings Map = namedStrings
         parse _, subPattern = pattern.toList()
-            const matchedString <>String = string.patternMatch?(subPattern, newCharIndex, newNamedStrings)
+            const matchedString <>String = string.patternMatch?(subPattern, newCharIndex, newNamedStrings, isResultNeeded)
             if matchedString.nothing?()
                 return nothing
             result += matchedString

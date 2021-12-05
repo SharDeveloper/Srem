@@ -10,7 +10,7 @@ def WordBoundaryPattern() WordBoundaryPattern
 attach WordBoundaryPattern to Independent
 
 attach WordBoundaryPattern to Pattern
-    def patternMatch?(string String, pattern WordBoundaryPattern, write charIndex Int, write namedStrings Map) <>String
+    def patternMatch?(string String, pattern WordBoundaryPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         var leftIsChar Bool = false
         if charIndex != 0
             const currentChar Char = string[charIndex - 1]

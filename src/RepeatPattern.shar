@@ -69,17 +69,18 @@ def readRepeatPattern(regExp String, write charIndex Int, pattern $Any) RepeatPa
 
 attach RepeatPattern to Pattern
     // If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "enum::error_pointlessRepetitions" code.
-    def patternMatch?(string String, pattern RepeatPattern, write charIndex Int, write namedStrings Map) <>String
+    def patternMatch?(string String, pattern RepeatPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         var result String = ""
         var newCharIndex Int = charIndex
         var newNamedStrings Map = namedStrings
         for :(counter Int = 0) counter < pattern.maxCount~(); counter++
-            const matchedString <>String = string.patternMatch?(pattern.pattern~(), newCharIndex, newNamedStrings)
+            const initCharIndex Int = newCharIndex
+            const matchedString <>String = string.patternMatch?(pattern.pattern~(), newCharIndex, newNamedStrings, isResultNeeded)
             if matchedString.nothing?()
                 if counter >= pattern.minCount~()
                     end counter
                 return nothing
-            if matchedString.empty?()
+            if newCharIndex == initCharIndex
                 throw(enum::error_pointlessRepetitions, "Pointless repetitions in a regular expression.", newCharIndex)
             result += matchedString
         charIndex = newCharIndex

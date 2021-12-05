@@ -1,4 +1,4 @@
 module Srem
 
 group Pattern
-    patternMatch?(String, This,  write Int, write Map) <>String
+    patternMatch?(String, This,  write Int, write Map, Bool) <>String

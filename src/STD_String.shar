@@ -16,10 +16,10 @@ def readString(regExp String, write charIndex Int) String
     return result
 
 attach String to Pattern
-    def patternMatch?(string, pattern String, write charIndex Int, write namedStrings Map) <>String
+    def patternMatch?(string, pattern String, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         if partsEqual?(string, charIndex, pattern, 0, pattern.length~())
             const newCharIndex Int = charIndex + pattern.length~()
-            const result String = string[charIndex:newCharIndex]
+            const result String = isResultNeeded.select(string[charIndex:newCharIndex], "")
             charIndex = newCharIndex
             return result
         return nothing

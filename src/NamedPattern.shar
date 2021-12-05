@@ -42,8 +42,8 @@ def readPatternName(regExp String, write charIndex Int) String
     return result
 
 attach NamedPattern to Pattern
-    def patternMatch?(string String, pattern NamedPattern, write charIndex Int, write namedStrings Map) <>String
-        const matchedString <>String = string.patternMatch?(pattern.pattern~(), charIndex, namedStrings)
+    def patternMatch?(string String, pattern NamedPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+        const matchedString <>String = string.patternMatch?(pattern.pattern~(), charIndex, namedStrings, true)
         if !matchedString.nothing?()
             namedStrings.put(pattern.name~(), matchedString)
         return matchedString

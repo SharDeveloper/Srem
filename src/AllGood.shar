@@ -9,7 +9,7 @@ def AllGood() AllGood
 attach AllGood to Independent
 
 attach AllGood to Pattern
-    def patternMatch?(string String, pattern AllGood, write charIndex Int, write namedStrings Map) <>String
-        const result String = string[charIndex:]
+    def patternMatch?(string String, pattern AllGood, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+        const result String = isResultNeeded.select(string[charIndex:], "")
         charIndex = string.length~()
         return result
