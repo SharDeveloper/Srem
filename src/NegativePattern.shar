@@ -2,15 +2,11 @@ module Srem
 
 // (?:pattern)
 type NegativePattern
+    pattern List
 
 #alwaysinline
-def NegativePattern(pattern RegExp) NegativePattern
-    return NegativePattern.fromList(pattern.toList())
-
-attach NegativePattern to FieldPattern
-    #alwaysinline
-    def pattern~(pattern NegativePattern) RegExp
-        return RegExp.fromList(pattern.toList())
+def NegativePattern(pattern List) NegativePattern
+    return unsafe_object(List.typeNumber(), pattern)
 
 attach NegativePattern to Pattern
     def patternMatch?(string String, pattern NegativePattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String

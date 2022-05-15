@@ -5,10 +5,10 @@ primitive StringEndPattern
 
 #alwaysinline
 def StringEndPattern() StringEndPattern
-    return unsafe_object(StringEndPattern.typeNumber~(), 0)
+    return unsafe_object(StringEndPattern.typeNumber(), 0)
 
 attach StringEndPattern to Independent
 
 attach StringEndPattern to Pattern
     def patternMatch?(string String, pattern StringEndPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
-        return (charIndex == string.length~()).select("", nothing)
+        return (charIndex == string.length()).select("", nothing)

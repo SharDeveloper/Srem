@@ -1,5 +1,4 @@
 module Srem
 
-export enum
-    error_invalidRegExp
-    error_pointlessRepetitions
+export const eid_invalidRegExp        Int = 0x5372656d01
+export const eid_pointlessRepetitions Int = 0x5372656d02

@@ -2,15 +2,7 @@ module Srem
 
 // (??pattern)
 type IgnoredPattern
-
-#alwaysinline
-def IgnoredPattern(pattern RegExp) IgnoredPattern
-    return IgnoredPattern.fromList(pattern.toList())
-
-attach IgnoredPattern to FieldPattern
-    #alwaysinline
-    def pattern~(pattern IgnoredPattern) RegExp
-        return RegExp.fromList(pattern.toList())
+    pattern List
 
 attach IgnoredPattern to Pattern
     def patternMatch?(string String, pattern IgnoredPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String

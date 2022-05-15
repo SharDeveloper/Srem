@@ -5,7 +5,7 @@ primitive WordBoundaryPattern
 
 #alwaysinline
 def WordBoundaryPattern() WordBoundaryPattern
-    return unsafe_object(WordBoundaryPattern.typeNumber~(), 0)
+    return unsafe_object(WordBoundaryPattern.typeNumber(), 0)
 
 attach WordBoundaryPattern to Independent
 
@@ -16,7 +16,7 @@ attach WordBoundaryPattern to Pattern
             const currentChar Char = string[charIndex - 1]
             leftIsChar = (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || (currentChar >= '0' && currentChar <= '9') || currentChar == '_'
         var rightIsChar Bool = false
-        if charIndex != string.length~()
+        if charIndex != string.length()
             const currentChar Char = string[charIndex]
             rightIsChar = (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || (currentChar >= '0' && currentChar <= '9') || currentChar == '_'
         return (leftIsChar != rightIsChar).select("", nothing)

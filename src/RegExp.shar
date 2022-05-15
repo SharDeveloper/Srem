@@ -2,176 +2,182 @@ module Srem
 
 //@Regular expression in the form of an array of objects that determine whether the string matches any pattern.
 export type RegExp
+    hide regExpString String
+    hide regExps      List
 
 //@The function creates an object of type "RegExp" using a regular expression from a string.
-//@If the regular expression specified in the string is incorrect, then the function returns an error with the code "enum::error_invalidRegExp", and the error data contains the index of the symbol on which the failure occurred.
+//@If the regular expression specified in the string is incorrect, then the function returns an error with the code "const::eid_invalidRegExp", and the error data contains the index of the symbol on which the failure occurred.
 #alwaysinline
 export def RegExp(regExp String) RegExp
     var index Int = 0
-    const result RegExp = readRegExp(regExp, index)
-    if index != regExp.length~()
-        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", index)
-    return result
+    const result List = readRegExp(regExp, index)
+    if index != regExp.length()
+        throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", index)
+    return RegExp{regExpString: regExp, regExps: result}
+
+#override(STD)
+def dump(regExp RegExp, level Int) String
+    return "  ".repeatPart(level) + "Type: Srem::RegExp = " + regExp.regExpString~() + "\n"
 
 #noinline
-def readRegExp(regExp String, write charIndex Int) RegExp
-    if charIndex == regExp.length~()
-        throw(enum::error_invalidRegExp, regExp.empty?().select("An empty regular expression.", "\q" + regExp + "\q is an invalid regular expression."), charIndex)
+def readRegExp(regExp String, write charIndex Int) List
+    if charIndex == regExp.length()
+        throw(const::eid_invalidRegExp, regExp.empty?().select("An empty regular expression.", "\q" + regExp + "\q is an invalid regular expression."), charIndex)
     var result List = {}
-    for :(mainLoop) charIndex < regExp.length~()
+    for :(mainLoop) charIndex < regExp.length()
         var newPattern $Any = nothing
         switch regExp[charIndex]
         case '('
             charIndex++
-            if charIndex == regExp.length~()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            if charIndex == regExp.length()
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             var signature <>String = ""
-            const indexOfSignature <>Int = regExp.lookAnyPartFromAtoB(["?(", "??", "?:", "?`("], charIndex, regExp.length~(), signature)
+            const indexOfSignature <>Int = regExp.lookAnyPartFromAtoB(["?(", "??", "?:", "?`("], charIndex, regExp.length(), signature)
             if indexOfSignature.nothing?() || indexOfSignature != charIndex
                 newPattern = readRegExp(regExp, charIndex)
             else
-                charIndex += signature.length~()
-                switch signature
-                case "?("
+                charIndex += signature.length()
+                switch signature[1]
+                case '('
                     newPattern = readNamedPattern(regExp, charIndex)
-                case "??"
-                    newPattern = IgnoredPattern(readRegExp(regExp, charIndex))
-                case "?:"
-                    newPattern = NegativePattern(readRegExp(regExp, charIndex))
-                case "?`("
+                case '?'
+                    newPattern = IgnoredPattern{pattern: readRegExp(regExp, charIndex)}
+                case ':'
+                    newPattern = NegativePattern{pattern: readRegExp(regExp, charIndex)}
+                case '`'
                     newPattern = readIf(regExp, charIndex)
                 default
                     unreachable()
-            if charIndex == regExp.length~()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            if charIndex == regExp.length()
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
         case ')'
             if result.empty?()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             end mainLoop
         case '`'
             charIndex++
-            if charIndex == regExp.length~()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            if charIndex == regExp.length()
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             switch regExp[charIndex]
             case 'd', 'D'
-                newPattern = CharPattern("0123456789", regExp[charIndex] == 'D')
+                newPattern = CharPattern{chars: "0123456789", negative: regExp[charIndex] == 'D'}
             case 's', 'S'
-                newPattern = CharPattern(" \t\n", regExp[charIndex] == 'S')
+                newPattern = CharPattern{chars: " \t\n", negative: regExp[charIndex] == 'S'}
             case 'w', 'W'
-                newPattern = CharPattern("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz", regExp[charIndex] == 'W')
+                newPattern = CharPattern{chars: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz", negative: regExp[charIndex] == 'W'}
             case 'b'
                 newPattern = WordBoundaryPattern()
             case 'B'
                 newPattern = NonWordBoundaryPattern()
             case '('
                 charIndex++
-                newPattern = NamedString(readPatternName(regExp, charIndex))
-                if charIndex == regExp.length~() || regExp[charIndex] != ')'
-                    throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+                newPattern = NamedString{name: readPatternName(regExp, charIndex)}
+                if charIndex == regExp.length() || regExp[charIndex] != ')'
+                    throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             default
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
         case '.'
-            newPattern = CharPattern("", true)
+            newPattern = CharPattern{chars: "", negative: true}
         case '#'
             newPattern = readString(regExp, charIndex)
             charIndex--
         case '['
             newPattern = readCharPattern(regExp, charIndex)
         case ']', '}'
-            throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
         case '^'
             newPattern = StringBeginPattern()
         case '$'
             newPattern = StringEndPattern()
         case '|'
             if result.empty?()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-            const firstPattern $Any = result.put(result.length~() - 1, nothing)
-            if !(firstPattern.type?(RegExp) || firstPattern.type?(OrPattern))
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            const firstPattern $Any = result.put(result.length() - 1, nothing)
+            if !(firstPattern.type?(List) || firstPattern.type?(OrPattern))
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             charIndex++
-            if charIndex == regExp.length~() || regExp[charIndex] != '('
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            if charIndex == regExp.length() || regExp[charIndex] != '('
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
             charIndex++
-            const secondPattern RegExp = readRegExp(regExp, charIndex)
-            if charIndex == regExp.length~()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-            result.put(result.length~() - 1, OrPattern(firstPattern, secondPattern)).type!(Nothing)
+            const secondPattern List = readRegExp(regExp, charIndex)
+            if charIndex == regExp.length()
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            result.put(result.length() - 1, OrPattern{firstRegExp: firstPattern, secondRegExp: secondPattern}).type!(Nothing)
         case '{'
             if result.empty?()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-            var pattern $Any = result.put(result.length~() - 1, nothing)
-            if pattern.type?(String) && pattern.length~() > 1
-                result.put(result.length~() - 1, pattern[:pattern.length~() - 1])
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            var pattern $Any = result.put(result.length() - 1, nothing)
+            if pattern.type?(String) && pattern.length() > 1
+                result.put(result.length() - 1, pattern[:pattern.length() - 1]).type!(Nothing)
                 result.addItem(nothing)
-                pattern.delete(0, pattern.length~() - 1)
-            result.put(result.length~() - 1, readRepeatPattern(regExp, charIndex, pattern)).type!(nothing)
+                pattern.delete(0, pattern.length() - 1)
+            result.put(result.length() - 1, readRepeatPattern(regExp, charIndex, pattern)).type!(Nothing)
         case '?'
             if result.empty?()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-            var pattern $Any = result.put(result.length~() - 1, nothing)
-            if pattern.type?(String) && pattern.length~() > 1
-                result.put(result.length~() - 1, pattern[:pattern.length~() - 1])
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            var pattern $Any = result.put(result.length() - 1, nothing)
+            if pattern.type?(String) && pattern.length() > 1
+                result.put(result.length() - 1, pattern[:pattern.length() - 1]).type!(Nothing)
                 result.addItem(nothing)
-                pattern.delete(0, pattern.length~() - 1)
-            result.put(result.length~() - 1, RepeatPattern(pattern, 0, 1)).type!(Nothing)
+                pattern.delete(0, pattern.length() - 1)
+            result.put(result.length() - 1, RepeatPattern{pattern: pattern, minCount: 0, maxCount: 1}).type!(Nothing)
         case '+'
             if result.empty?()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-            var pattern $Any = result.put(result.length~() - 1, nothing)
-            if pattern.type?(String) && pattern.length~() > 1
-                result.put(result.length~() - 1, pattern[:pattern.length~() - 1])
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            var pattern $Any = result.put(result.length() - 1, nothing)
+            if pattern.type?(String) && pattern.length() > 1
+                result.put(result.length() - 1, pattern[:pattern.length() - 1]).type!(Nothing)
                 result.addItem(nothing)
-                pattern.delete(0, pattern.length~() - 1)
-            result.put(result.length~() - 1, RepeatPattern(pattern, 1, 9223372036854775807)).type!(Nothing)
+                pattern.delete(0, pattern.length() - 1)
+            result.put(result.length() - 1, RepeatPattern{pattern: pattern, minCount: 1, maxCount: 9223372036854775807}).type!(Nothing)
         case '*'
             if result.empty?()
-                throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-            var pattern $Any = result.put(result.length~() - 1, nothing)
-            if pattern.type?(String) && pattern.length~() > 1
-                result.put(result.length~() - 1, pattern[:pattern.length~() - 1])
+                throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+            var pattern $Any = result.put(result.length() - 1, nothing)
+            if pattern.type?(String) && pattern.length() > 1
+                result.put(result.length() - 1, pattern[:pattern.length() - 1]).type!(Nothing)
                 result.addItem(nothing)
-                pattern.delete(0, pattern.length~() - 1)
-            result.put(result.length~() - 1, RepeatPattern(pattern, 0, 9223372036854775807)).type!(Nothing)
+                pattern.delete(0, pattern.length() - 1)
+            result.put(result.length() - 1, RepeatPattern{pattern: pattern, minCount: 0, maxCount: 9223372036854775807}).type!(Nothing)
         default
             newPattern = readString(regExp, charIndex)
             charIndex--
         if !newPattern.nothing?()
             result.addItem(newPattern)
         charIndex++
-        if charIndex == regExp.length~()
+        if charIndex == regExp.length()
             end mainLoop
     if result.empty?()
-        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-    const lastPattern $Any = result[result.length~() - 1]
+        throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    const lastPattern $Any = result[result.length() - 1]
     if lastPattern.type?(RepeatPattern)
         const repeatPattern RepeatPattern = lastPattern
         if repeatPattern.pattern~().type?(CharPattern) && repeatPattern.minCount~() == 0 && repeatPattern.maxCount~() == 9223372036854775807
             const charPattern CharPattern = repeatPattern.pattern~()
-            if charPattern.chars~().empty?() && charPattern.negative?()
-                result.setItem(result.length~() - 1, AllGood())
-    return RegExp.fromList(result)
+            if charPattern.chars~().empty?() && charPattern.negative~()
+                result.setItem(result.length() - 1, AllFits())
+    return result
 
 //@The function checks if the string matches the specified regular expression.
 //@If the string matches a regular expression, then the function returns an associative array of type "STD::Map", the keys of the array are the names of the patterns, and as a value, the text that matches the pattern in the string.
 //@If there are no named patterns in the string, then the function returns an empty associative array.
 //@If the string does not match the regular expression, then the function returns "nothing".
 //@If different text corresponds to the same name, then the text that is closer to the end of the string is taken.
-//@If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "enum::error_pointlessRepetitions" code.
+//@If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "const::eid_pointlessRepetitions" code.
 export def match?(string String, regExp RegExp) <>Map
     var result <>Map = Map()
     var charIndex Int = 0
-    const matchedString <>String = string.patternMatch?(regExp, charIndex, result, false)
-    if matchedString.nothing?() || charIndex != string.length~()
+    const matchedString <>String = string.patternMatch?(regExp.regExps~(), charIndex, result, false)
+    if matchedString.nothing?() || charIndex != string.length()
         result = nothing
     return result
 
-attach RegExp to Pattern
-    def patternMatch?(string String, pattern RegExp, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+attach List to Pattern
+    def patternMatch?(string String, pattern List, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         var result String = ""
         var newCharIndex Int = charIndex
         var newNamedStrings Map = namedStrings
-        parse _, subPattern = pattern.toList()
+        parse _, subPattern = pattern
             const matchedString <>String = string.patternMatch?(subPattern, newCharIndex, newNamedStrings, isResultNeeded)
             if matchedString.nothing?()
                 return nothing

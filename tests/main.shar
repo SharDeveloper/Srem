@@ -5,6 +5,6 @@ def main()
     var errorsCoordinates List = {}
     testRegExp(ok, errorsCoordinates)
 
-    for :(index Int = 0) index < errorsCoordinates.length~(); index += 2
-        println("\001B[31mFail: (file: "+errorsCoordinates[index]+", line: "+errorsCoordinates[index + 1].toString()+")\001B[0m")
-    println("\001B[3"+(errorsCoordinates.empty?()).select("2", "1")+"m" +ok.toString()+"/"+(ok + errorsCoordinates.length~() / 2).toString()+"\001B[0m")
+    for :(index Int = 0) index < errorsCoordinates.length(); index += 2
+        println("\00001B[31mFail: (file: "+errorsCoordinates[index]+", line: "+errorsCoordinates[index + 1].toString()+")\00001B[0m")
+    println("\00001B[3"+(errorsCoordinates.empty?()).select("2", "1")+"m" +ok.toString()+"/"+(ok + errorsCoordinates.length() / 2).toString()+"\00001B[0m")

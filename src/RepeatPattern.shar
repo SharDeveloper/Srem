@@ -11,40 +11,22 @@ module Srem
 // char*      - char{0,9223372036854775807}
 // (pattern)* - (pattern){0,9223372036854775807}
 type RepeatPattern
-    // pattern              $Any
-    // minCount, maxCount Int
-
-attach RepeatPattern to FieldPattern
-    #alwaysinline
-    def pattern~(pattern RepeatPattern) $Any
-        return pattern.typeGetItem(0)
-
-attach RepeatPattern to FieldMinCount
-    #alwaysinline
-    def minCount~(pattern RepeatPattern) Int
-        return pattern.typeGetItem(1)
-
-attach RepeatPattern to FieldMaxCount
-    #alwaysinline
-    def maxCount~(pattern RepeatPattern) Int
-        return pattern.typeGetItem(2)
-
-#alwaysinline
-def RepeatPattern(pattern $Any, minCount, maxCount Int) RepeatPattern
-    return RepeatPattern.fromList({pattern, minCount, maxCount})
+    pattern  $Any
+    minCount Int
+    maxCount Int
 
 def readRepeatPattern(regExp String, write charIndex Int, pattern $Any) RepeatPattern
     charIndex++
-    const separatorOrEndIndex <>Int = regExp.lookAnyFromAtoB(",}", charIndex, regExp.length~())
+    const separatorOrEndIndex <>Int = regExp.lookAnyFromAtoB(",}", charIndex, regExp.length())
     if separatorOrEndIndex.nothing?()
-        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+        throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
     var min Int = -1
     var max Int = -1
     if regExp[separatorOrEndIndex] == ','
         const separatorIndex Int = separatorOrEndIndex
-        const endIndex <>Int = regExp.lookFromAtoB('}', separatorIndex + 1, regExp.length~())
+        const endIndex <>Int = regExp.lookFromAtoB('}', separatorIndex + 1, regExp.length())
         if endIndex.nothing?()
-            throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", separatorIndex + 1)
+            throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", separatorIndex + 1)
         const minAsString String = regExp[charIndex:separatorIndex]
         const maxAsString String = regExp[separatorIndex + 1:endIndex]
         try
@@ -64,11 +46,11 @@ def readRepeatPattern(regExp String, write charIndex Int, pattern $Any) RepeatPa
         catch
             nothing
     if (min | max) <= 0 || min > max
-        throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
-    return RepeatPattern(pattern, min, max)
+        throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+    return RepeatPattern{pattern: pattern, minCount: min, maxCount: max}
 
 attach RepeatPattern to Pattern
-    // If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "enum::error_pointlessRepetitions" code.
+    // If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "const::eid_pointlessRepetitions" code.
     def patternMatch?(string String, pattern RepeatPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         var result String = ""
         var newCharIndex Int = charIndex
@@ -81,7 +63,7 @@ attach RepeatPattern to Pattern
                     end counter
                 return nothing
             if newCharIndex == initCharIndex
-                throw(enum::error_pointlessRepetitions, "Pointless repetitions in a regular expression.", newCharIndex)
+                throw(const::eid_pointlessRepetitions, "Pointless repetitions in a regular expression.", newCharIndex)
             result += matchedString
         charIndex = newCharIndex
         namedStrings = newNamedStrings

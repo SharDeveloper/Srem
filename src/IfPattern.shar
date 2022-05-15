@@ -2,57 +2,35 @@ module Srem
 
 // (?`(name=(pattern))(pattern)(pattern))
 type IfPattern
-    // name                                       String
-    // predicatePattern, thenPattern, elsePattern RegExp
-
-attach IfPattern to FieldName
-    #alwaysinline
-    def name~(pattern IfPattern) String
-        return pattern.typeGetItem(0)
-
-attach IfPattern to FieldPredicatePattern
-    #alwaysinline
-    def predicatePattern~(pattern IfPattern) RegExp
-        return pattern.typeGetItem(1)
-
-attach IfPattern to FieldThenPattern
-    #alwaysinline
-    def thenPattern~(pattern IfPattern) RegExp
-        return pattern.typeGetItem(2)
-
-attach IfPattern to FieldElsePattern
-    #alwaysinline
-    def elsePattern~(pattern IfPattern) RegExp
-        return pattern.typeGetItem(3)
-
-#alwaysinline
-def IfPattern(name String, predicatePattern, thenPattern, elsePattern RegExp) IfPattern
-    return IfPattern.fromList({name, predicatePattern, thenPattern, elsePattern})
+    name             String
+    predicatePattern List
+    thenPattern      List
+    elsePattern      List
 
 def readIf(regExp String, write charIndex Int) IfPattern
     const name String = readPatternName(regExp, charIndex)
-    if charIndex != regExp.length~() && regExp[charIndex] == '='
+    if charIndex != regExp.length() && regExp[charIndex] == '='
         charIndex++
-        if charIndex != regExp.length~() && regExp[charIndex] == '('
+        if charIndex != regExp.length() && regExp[charIndex] == '('
             charIndex++
-            const predicatePattern RegExp = readRegExp(regExp, charIndex)
-            if charIndex != regExp.length~()
+            const predicatePattern List = readRegExp(regExp, charIndex)
+            if charIndex != regExp.length()
                 charIndex++
-                if charIndex != regExp.length~() && regExp[charIndex] == ')'
+                if charIndex != regExp.length() && regExp[charIndex] == ')'
                     charIndex++
-                    if charIndex != regExp.length~() && regExp[charIndex] == '('
+                    if charIndex != regExp.length() && regExp[charIndex] == '('
                         charIndex++
-                        const thenPattern RegExp = readRegExp(regExp, charIndex)
-                        if charIndex != regExp.length~()
+                        const thenPattern List = readRegExp(regExp, charIndex)
+                        if charIndex != regExp.length()
                             charIndex++
-                            if charIndex != regExp.length~() && regExp[charIndex] == '('
+                            if charIndex != regExp.length() && regExp[charIndex] == '('
                                 charIndex++
-                                const elsePattern RegExp = readRegExp(regExp, charIndex)
-                                if charIndex != regExp.length~() && regExp[charIndex] == ')'
+                                const elsePattern List = readRegExp(regExp, charIndex)
+                                if charIndex != regExp.length() && regExp[charIndex] == ')'
                                     charIndex++
-                                    if charIndex != regExp.length~() && regExp[charIndex] == ')'
-                                        return IfPattern(name, predicatePattern, thenPattern, elsePattern)
-    throw(enum::error_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
+                                    if charIndex != regExp.length() && regExp[charIndex] == ')'
+                                        return IfPattern{name : name, predicatePattern: predicatePattern, thenPattern: thenPattern, elsePattern: elsePattern}
+    throw(const::eid_invalidRegExp, "\q" + regExp + "\q is an invalid regular expression.", charIndex)
 
 attach IfPattern to Pattern
     def patternMatch?(string String, pattern IfPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
@@ -61,5 +39,5 @@ attach IfPattern to Pattern
             return nothing
         var predicatePatternCharIndex Int = 0
         var tmpNamedStrings Map = namedStrings
-        const subPattern RegExp = namedString.patternMatch?(pattern.predicatePattern~(), predicatePatternCharIndex, tmpNamedStrings, false).nothing?().select(pattern.elsePattern~(), pattern.thenPattern~())
+        const subPattern List = namedString.patternMatch?(pattern.predicatePattern~(), predicatePatternCharIndex, tmpNamedStrings, false).nothing?().select(pattern.elsePattern~(), pattern.thenPattern~())
         return string.patternMatch?(subPattern, charIndex, namedStrings, isResultNeeded)

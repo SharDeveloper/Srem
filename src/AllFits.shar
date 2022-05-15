@@ -1,0 +1,15 @@
+module Srem
+
+primitive AllFits
+
+#alwaysinline
+def AllFits() AllFits
+    return unsafe_object(AllFits.typeNumber(), 0)
+
+attach AllFits to Independent
+
+attach AllFits to Pattern
+    def patternMatch?(string String, pattern AllFits, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+        const result String = isResultNeeded.select(string[charIndex:], "")
+        charIndex = string.length()
+        return result

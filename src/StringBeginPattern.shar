@@ -5,7 +5,7 @@ primitive StringBeginPattern
 
 #alwaysinline
 def StringBeginPattern() StringBeginPattern
-    return unsafe_object(StringBeginPattern.typeNumber~(), 0)
+    return unsafe_object(StringBeginPattern.typeNumber(), 0)
 
 attach StringBeginPattern to Independent
 

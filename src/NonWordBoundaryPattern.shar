@@ -5,7 +5,7 @@ primitive NonWordBoundaryPattern
 
 #alwaysinline
 def NonWordBoundaryPattern() NonWordBoundaryPattern
-    return unsafe_object(NonWordBoundaryPattern.typeNumber~(), 0)
+    return unsafe_object(NonWordBoundaryPattern.typeNumber(), 0)
 
 attach NonWordBoundaryPattern to Independent
 
@@ -16,7 +16,7 @@ attach NonWordBoundaryPattern to Pattern
             const currentChar Char = string[charIndex - 1]
             leftIsChar = (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || (currentChar >= '0' && currentChar <= '9') || currentChar == '_'
         var rightIsChar Bool = false
-        if charIndex != string.length~()
+        if charIndex != string.length()
             const currentChar Char = string[charIndex]
             rightIsChar = (currentChar >= 'a' && currentChar <= 'z') || (currentChar >= 'A' && currentChar <= 'Z') || (currentChar >= '0' && currentChar <= '9') || currentChar == '_'
         return (leftIsChar == rightIsChar).select("", nothing)

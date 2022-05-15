@@ -2,22 +2,8 @@ module Srem
 
 // (pattern)|(pattern)
 type OrPattern
-    // firstRegExp RegExp | OrPattern
-    // secondRegExp RegExp
-
-attach OrPattern to FieldFirstRegExp
-    #alwaysinline
-    def firstRegExp~(pattern OrPattern) $Any
-        return pattern.typeGetItem(0)
-
-attach OrPattern to FieldSecondRegExp
-    #alwaysinline
-    def secondRegExp~(pattern OrPattern) RegExp
-        return pattern.typeGetItem(1)
-
-#alwaysinline
-def OrPattern(firstRegExp $Any, secondRegExp RegExp) OrPattern
-    return OrPattern.fromList({firstRegExp, secondRegExp})
+    firstRegExp  $Any // List | OrPattern
+    secondRegExp List
 
 attach OrPattern to Pattern
     def patternMatch?(string String, pattern OrPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
