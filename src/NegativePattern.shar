@@ -4,10 +4,6 @@ module Srem
 type NegativePattern
     pattern List
 
-#alwaysinline
-def NegativePattern(pattern List) NegativePattern
-    return unsafe_object(List.typeNumber(), pattern)
-
 attach NegativePattern to Pattern
     def patternMatch?(string String, pattern NegativePattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
         var tmpCharIndex Int = charIndex
