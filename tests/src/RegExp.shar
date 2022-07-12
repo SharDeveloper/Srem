@@ -16,6 +16,7 @@ def testRegExp(write ok Int, write errorsCoordinates List)
     testRegExp_namedString(ok, errorsCoordinates)
     testRegExp_or(ok, errorsCoordinates)
     testRegExp_regExp(ok, errorsCoordinates)
+    testRegExp_replace(ok, errorsCoordinates)
 
 #noinline
 def testRegExp_char(write ok Int, write errorsCoordinates List)
@@ -1039,3 +1040,22 @@ def testRegExp_regExp(write ok Int, write errorsCoordinates List)
         "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d2"].type!(MString).index~() == 3
         "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d3"].type!(MString).value~() == "ef"
         "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d3"].type!(MString).index~() == 6
+
+#noinline
+def testRegExp_replace(write ok Int, write errorsCoordinates List)
+    var m Map = Map()
+    m.put("a", "abcde")
+    m.put("b", "1")
+    m.put("c", "")
+    m.put("d", "34")
+    m.put("e", "a3")
+    test: ok, errorsCoordinates
+        "".Srem::replace(Map(), Map()) == ""
+        "1".Srem::replace(Map(), Map()) == "1"
+        "12".Srem::replace(Map(), Map()) == "12"
+        "121".Srem::replace(Map(), Map()) == "121"
+        "1 2 1".Srem::replace("1 2 1".match?(RegExp("(?(d)1) 2 1")), m) == "34 2 1"
+        "111 2222 13333".Srem::replace("111 2222 13333".match?(RegExp("(?(d)1+) (?(a)2+) (?(b)13+)")), m) == "34 abcde 1"
+        "111 2222 13333".Srem::replace("111 2222 13333".match?(RegExp("(?(d)^)111 (?(c)2+) (?(b)13+)")), m) == "34111  1"
+        "111 2222 13333".Srem::replace("111 2222 13333".match?(RegExp("111 (?(c)2+) 13333(?(b)$)")), m) == "111  133331"
+        "111 2222 13333".Srem::replace("111 2222 13333".match?(RegExp("111 (?(a)2+) 13333")), m) == "111 abcde 13333"

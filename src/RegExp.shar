@@ -172,6 +172,78 @@ export def match?(string String, regExp RegExp) <>Map
         result = nothing
     return result
 
+// The type is only needed for the "replace" function.
+type NewStringData
+    oldStringIndex  Int
+    oldStringLength Int
+    newString       String
+
+attach NewStringData to Equal
+
+attach NewStringData to Shar__sugar__equal
+    #alwaysinline nothrow
+    def shar__sugar__equal(data1, data2 NewStringData) Bool
+        return data1.oldStringIndex~() == data2.oldStringIndex~()
+
+attach NewStringData to Shar__sugar__notEqual
+    #alwaysinline nothrow
+    def shar__sugar__notEqual(data1, data2 NewStringData) Bool
+        return data1.oldStringIndex~() != data2.oldStringIndex~()
+
+attach NewStringData to Ordered
+    #alwaysinline nothrow
+    def compare(data1, data2 NewStringData) CompareResult
+        return data1.oldStringIndex~().compare(data2.oldStringIndex~())
+
+attach NewStringData to Shar__sugar__great
+    #alwaysinline nothrow
+    def shar__sugar__great(data1, data2 NewStringData) Bool
+        return data1.oldStringIndex~() > data2.oldStringIndex~()
+
+attach NewStringData to Shar__sugar__greatOrEqual
+    #alwaysinline nothrow
+    def shar__sugar__greatOrEqual(data1, data2 NewStringData) Bool
+        return data1.oldStringIndex~() >= data2.oldStringIndex~()
+
+attach NewStringData to Shar__sugar__less
+    #alwaysinline nothrow
+    def shar__sugar__less(data1, data2 NewStringData) Bool
+        return data1.oldStringIndex~() < data2.oldStringIndex~()
+
+attach NewStringData to Shar__sugar__lessOrEqual
+    #alwaysinline nothrow
+    def shar__sugar__lessOrEqual(data1, data2 NewStringData) Bool
+        return data1.oldStringIndex~() <= data2.oldStringIndex~()
+
+//@The function replaces the strings found using the "match?" function with custom strings.
+//@If among the custom strings there is no string found using the "match?" function, then the string with the name will remain unchanged.
+export def replace(string String, matchResult Map, customStrings Map) String
+    if matchResult.empty?()
+        return string
+    var newStringsData Array = []
+    var resultLength Int = string.length()
+    parse name String, oldString MString = matchResult
+        const newString <>String = customStrings[name]
+        if !newString.nothing?()
+            resultLength += newString.length() - oldString.value~().length()
+            newStringsData.addItem(NewStringData{{
+                oldStringIndex  : oldString.index~(),
+                oldStringLength : oldString.value~().length(),
+                newString       : newString
+            }})
+    newStringsData.sort(true)
+    var result String = ' '.repeat(resultLength, String)
+    var oldIndex Int = 0
+    var newIndex Int = 0
+    parse _, newStringData NewStringData = newStringsData
+        result.copy(newIndex, string, oldIndex, newStringData.oldStringIndex~() - oldIndex)
+        newIndex += newStringData.oldStringIndex~() - oldIndex
+        result.copy(newIndex, newStringData.newString~(), 0, newStringData.newString~().length())
+        newIndex += newStringData.newString~().length()
+        oldIndex = newStringData.oldStringIndex~() + newStringData.oldStringLength~()
+    result.copy(newIndex, string, oldIndex, string.length() - oldIndex)
+    return result
+
 attach List to Pattern
     def patternMatch?(string String, pattern List, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
         var resultStr String = ""
