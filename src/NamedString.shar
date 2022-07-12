@@ -5,6 +5,6 @@ type NamedString
     name String
 
 attach NamedString to Pattern
-    def patternMatch?(string String, pattern NamedString, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
-        const namedString <>String = namedStrings[pattern.name~()]
-        return namedString.nothing?().select(nothing, string.patternMatch?(namedString, charIndex, namedStrings, isResultNeeded))
+    def patternMatch?(string String, pattern NamedString, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
+        const namedString <>MString = namedStrings[pattern.name~()]
+        return namedString.nothing?().select(nothing, string.patternMatch?(namedString.value~(), charIndex, namedStrings, isResultNeeded))

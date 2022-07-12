@@ -51,20 +51,21 @@ def readRepeatPattern(regExp String, write charIndex Int, pattern $Any) RepeatPa
 
 attach RepeatPattern to Pattern
     // If, as a repeating pattern, a pattern has worked that does not match any character, the function returns an error with the "const::eid_pointlessRepetitions" code.
-    def patternMatch?(string String, pattern RepeatPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
-        var result String = ""
+    def patternMatch?(string String, pattern RepeatPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
+        var resultStr String = ""
         var newCharIndex Int = charIndex
         var newNamedStrings Map = namedStrings
         for :(counter Int = 0) counter < pattern.maxCount~(); counter++
             const initCharIndex Int = newCharIndex
-            const matchedString <>String = string.patternMatch?(pattern.pattern~(), newCharIndex, newNamedStrings, isResultNeeded)
+            const matchedString <>MString = string.patternMatch?(pattern.pattern~(), newCharIndex, newNamedStrings, isResultNeeded)
             if matchedString.nothing?()
                 if counter >= pattern.minCount~()
                     end counter
                 return nothing
             if newCharIndex == initCharIndex
                 throw(const::eid_pointlessRepetitions, "Pointless repetitions in a regular expression.", newCharIndex)
-            result += matchedString
+            resultStr += matchedString.value~()
+        const result MString = MString{value : resultStr, index : charIndex}
         charIndex = newCharIndex
         namedStrings = newNamedStrings
         return result

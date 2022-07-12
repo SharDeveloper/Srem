@@ -1,4 +1,9 @@
 module Srem
 
+//@A string that matches some pattern.
+export type MString
+    value String
+    index Int
+
 group Pattern
-    patternMatch?(String, This,  write Int, write Map, Bool) <>String
+    patternMatch?(String, This,  write Int, write Map, Bool) <>MString

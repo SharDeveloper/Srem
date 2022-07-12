@@ -5,7 +5,7 @@ type IgnoredPattern
     pattern List
 
 attach IgnoredPattern to Pattern
-    def patternMatch?(string String, pattern IgnoredPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+    def patternMatch?(string String, pattern IgnoredPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
         var tmpCharIndex Int = charIndex
         var unneeded Map = Map()
-        return string.patternMatch?(pattern.pattern~(), tmpCharIndex, unneeded, false)->createEmpty()
+        return string.patternMatch?(pattern.pattern~(), tmpCharIndex, unneeded, false).nothing?().select(nothing, MString{value : "", index : charIndex})

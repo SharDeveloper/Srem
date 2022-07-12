@@ -159,7 +159,7 @@ def readRegExp(regExp String, write charIndex Int) List
     return result
 
 //@The function checks if the string matches the specified regular expression.
-//@If the string matches a regular expression, then the function returns an associative array of type "STD::Map", the keys of the array are the names of the patterns, and as a value, the text that matches the pattern in the string.
+//@If the string matches a regular expression, then the function returns an associative array of type "STD::Map", the keys of the array are the names of the patterns, and as a value, the text that matches the pattern in the string and the index of the first character of the text.
 //@If there are no named patterns in the string, then the function returns an empty associative array.
 //@If the string does not match the regular expression, then the function returns "nothing".
 //@If different text corresponds to the same name, then the text that is closer to the end of the string is taken.
@@ -167,21 +167,22 @@ def readRegExp(regExp String, write charIndex Int) List
 export def match?(string String, regExp RegExp) <>Map
     var result <>Map = Map()
     var charIndex Int = 0
-    const matchedString <>String = string.patternMatch?(regExp.regExps~(), charIndex, result, false)
+    const matchedString <>MString = string.patternMatch?(regExp.regExps~(), charIndex, result, false)
     if matchedString.nothing?() || charIndex != string.length()
         result = nothing
     return result
 
 attach List to Pattern
-    def patternMatch?(string String, pattern List, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
-        var result String = ""
+    def patternMatch?(string String, pattern List, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
+        var resultStr String = ""
         var newCharIndex Int = charIndex
         var newNamedStrings Map = namedStrings
         parse _, subPattern = pattern
-            const matchedString <>String = string.patternMatch?(subPattern, newCharIndex, newNamedStrings, isResultNeeded)
+            const matchedString <>MString = string.patternMatch?(subPattern, newCharIndex, newNamedStrings, isResultNeeded)
             if matchedString.nothing?()
                 return nothing
-            result += matchedString
+            resultStr += matchedString.value~()
+        const result MString = MString{value : resultStr, index : charIndex}
         charIndex = newCharIndex
         namedStrings = newNamedStrings
         return result

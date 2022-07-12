@@ -10,5 +10,5 @@ def StringBeginPattern() StringBeginPattern
 attach StringBeginPattern to Independent
 
 attach StringBeginPattern to Pattern
-    def patternMatch?(string String, pattern StringBeginPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
-        return (charIndex == 0).select("", nothing)
+    def patternMatch?(string String, pattern StringBeginPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
+        return (charIndex == 0).select(MString{value : "", index : charIndex}, nothing)

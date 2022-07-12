@@ -6,9 +6,9 @@ type OrPattern
     secondRegExp List
 
 attach OrPattern to Pattern
-    def patternMatch?(string String, pattern OrPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+    def patternMatch?(string String, pattern OrPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
         do
-            const matchedString <>String = string.patternMatch?(pattern.firstRegExp~(), charIndex, namedStrings, isResultNeeded)
+            const matchedString <>MString = string.patternMatch?(pattern.firstRegExp~(), charIndex, namedStrings, isResultNeeded)
             if !matchedString.nothing?()
                 return matchedString
         return string.patternMatch?(pattern.secondRegExp~(), charIndex, namedStrings, isResultNeeded)

@@ -9,7 +9,7 @@ def AllFits() AllFits
 attach AllFits to Independent
 
 attach AllFits to Pattern
-    def patternMatch?(string String, pattern AllFits, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
-        const result String = isResultNeeded.select(string[charIndex:], "")
+    def patternMatch?(string String, pattern AllFits, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
+        const result MString = MString{value : isResultNeeded.select(string[charIndex:], ""), index : charIndex}
         charIndex = string.length()
         return result

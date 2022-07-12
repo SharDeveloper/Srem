@@ -580,6 +580,18 @@ def testRegExp_char(write ok Int, write errorsCoordinates List)
         RegExp("[-1]") : eid_invalidRegExp
         RegExp("[^-1]") : eid_invalidRegExp
         RegExp("[^-1]") : eid_invalidRegExp
+        "a b c".match?(RegExp("(?(d1).) (?(d2).) (?(d3).)"))["d1"].type!(MString).value~() == "a"
+        "a b c".match?(RegExp("(?(d1).) (?(d2).) (?(d3).)"))["d1"].type!(MString).index~() == 0
+        "a b c".match?(RegExp("(?(d1).) (?(d2).) (?(d3).)"))["d2"].type!(MString).value~() == "b"
+        "a b c".match?(RegExp("(?(d1).) (?(d2).) (?(d3).)"))["d2"].type!(MString).index~() == 2
+        "a b c".match?(RegExp("(?(d1).) (?(d2).) (?(d3).)"))["d3"].type!(MString).value~() == "c"
+        "a b c".match?(RegExp("(?(d1).) (?(d2).) (?(d3).)"))["d3"].type!(MString).index~() == 4
+        "ab cd ef".match?(RegExp("(?(d).*)"))["d"].type!(MString).value~() == "ab cd ef"
+        "ab cd ef".match?(RegExp("(?(d).*)"))["d"].type!(MString).index~() == 0
+        "ab cd ef".match?(RegExp("ab (?(d).*)"))["d"].type!(MString).value~() == "cd ef"
+        "ab cd ef".match?(RegExp("ab (?(d).*)"))["d"].type!(MString).index~() == 3
+        "ab cd ef".match?(RegExp("ab cd (?(d).*)"))["d"].type!(MString).value~() == "ef"
+        "ab cd ef".match?(RegExp("ab cd (?(d).*)"))["d"].type!(MString).index~() == 6
 
 #noinline
 def testRegExp_ignored(write ok Int, write errorsCoordinates List)
@@ -594,6 +606,16 @@ def testRegExp_ignored(write ok Int, write errorsCoordinates List)
         RegExp("(??)") : eid_invalidRegExp
         RegExp("(??") : eid_invalidRegExp
         RegExp("(??abs") : eid_invalidRegExp
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d1"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d1"].type!(MString).index~() == 0
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d2"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d2"].type!(MString).index~() == 0
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d3"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d3"].type!(MString).index~() == 2
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d4"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d4"].type!(MString).index~() == 4
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d5"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(??^))(?(d2)(??1))1 (?(d3)(??2))2 (?(d4)(??3))3(?(d5)(??$))"))["d5"].type!(MString).index~() == 5
 
 #noinline
 def testRegExp_negative(write ok Int, write errorsCoordinates List)
@@ -613,6 +635,16 @@ def testRegExp_negative(write ok Int, write errorsCoordinates List)
         RegExp("(?:)") : eid_invalidRegExp
         RegExp("(?:") : eid_invalidRegExp
         RegExp("(?:abs") : eid_invalidRegExp
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d1"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d1"].type!(MString).index~() == 0
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d2"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d2"].type!(MString).index~() == 0
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d3"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d3"].type!(MString).index~() == 2
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d4"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d4"].type!(MString).index~() == 4
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d5"].type!(MString).value~() == ""
+        "1 2 3".match?(RegExp("(?(d1)(?:$))(?(d2)(?:2))1 (?(d3)(?:3))2 (?(d4)(?:1))3(?(d5)(?:^))"))["d5"].type!(MString).index~() == 5
 
 #noinline
 def testRegExp_wordBoundary(write ok Int, write errorsCoordinates List)
@@ -633,6 +665,14 @@ def testRegExp_wordBoundary(write ok Int, write errorsCoordinates List)
         "some".match?(RegExp("s`bome")).nothing?()
         "some".match?(RegExp("so`bme")).nothing?()
         "some".match?(RegExp("s`bo`bm`be")).nothing?()
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d1"].type!(MString).value~().empty?()
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d1"].type!(MString).index~() == 0
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d2"].type!(MString).value~().empty?()
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d2"].type!(MString).index~() == 1
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d3"].type!(MString).value~().empty?()
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d3"].type!(MString).index~() == 2
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d4"].type!(MString).value~().empty?()
+        "1|2".match?(RegExp("(?(d1)`b).(?(d2)`b).(?(d3)`b).(?(d4)`b)"))["d4"].type!(MString).index~() == 3
 
 #noinline
 def testRegExp_nonWordBoundary(write ok Int, write errorsCoordinates List)
@@ -656,6 +696,14 @@ def testRegExp_nonWordBoundary(write ok Int, write errorsCoordinates List)
         "some".match?(RegExp("s`Bome")).type!(Map).empty?()
         "some".match?(RegExp("so`Bme")).type!(Map).empty?()
         "some".match?(RegExp("s`Bo`Bm`Be")).type!(Map).empty?()
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d1"].type!(MString).value~().empty?()
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d1"].type!(MString).index~() == 0
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d2"].type!(MString).value~().empty?()
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d2"].type!(MString).index~() == 1
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d3"].type!(MString).value~().empty?()
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d3"].type!(MString).index~() == 2
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d4"].type!(MString).value~().empty?()
+        "|||".match?(RegExp("(?(d1)`B).(?(d2)`B).(?(d3)`B).(?(d4)`B)"))["d4"].type!(MString).index~() == 3
 
 #noinline
 def testRegExp_string(write ok Int, write errorsCoordinates List)
@@ -671,6 +719,12 @@ def testRegExp_string(write ok Int, write errorsCoordinates List)
         "some 123".match?(RegExp("some 123")).type!(Map).empty?()
         "some 123".match?(RegExp("some 1230")).nothing?()
         "some 1230".match?(RegExp("some 123")).nothing?()
+        "ab cd ef".match?(RegExp("(?(d1)ab) (?(d2)cd) (?(d3)ef)"))["d1"].type!(MString).value~() == "ab"
+        "ab cd ef".match?(RegExp("(?(d1)ab) (?(d2)cd) (?(d3)ef)"))["d1"].type!(MString).index~() == 0
+        "ab cd ef".match?(RegExp("(?(d1)ab) (?(d2)cd) (?(d3)ef)"))["d2"].type!(MString).value~() == "cd"
+        "ab cd ef".match?(RegExp("(?(d1)ab) (?(d2)cd) (?(d3)ef)"))["d2"].type!(MString).index~() == 3
+        "ab cd ef".match?(RegExp("(?(d1)ab) (?(d2)cd) (?(d3)ef)"))["d3"].type!(MString).value~() == "ef"
+        "ab cd ef".match?(RegExp("(?(d1)ab) (?(d2)cd) (?(d3)ef)"))["d3"].type!(MString).index~() == 6
 
 #noinline
 def testRegExp_repeat(write ok Int, write errorsCoordinates List)
@@ -737,6 +791,12 @@ def testRegExp_repeat(write ok Int, write errorsCoordinates List)
         RegExp("1{,2") : eid_invalidRegExp
         "11111".match?(RegExp("(??1)*")) : eid_pointlessRepetitions
         "11111".match?(RegExp("^*")) : eid_pointlessRepetitions
+        "ab cc ef".match?(RegExp("(?(d1)`w*) (?(d2)c+) (?(d3)(ef)?)"))["d1"].type!(MString).value~() == "ab"
+        "ab cc ef".match?(RegExp("(?(d1)`w*) (?(d2)c+) (?(d3)(ef)?)"))["d1"].type!(MString).index~() == 0
+        "ab cc ef".match?(RegExp("(?(d1)`w*) (?(d2)c+) (?(d3)(ef)?)"))["d2"].type!(MString).value~() == "cc"
+        "ab cc ef".match?(RegExp("(?(d1)`w*) (?(d2)c+) (?(d3)(ef)?)"))["d2"].type!(MString).index~() == 3
+        "ab cc ef".match?(RegExp("(?(d1)`w*) (?(d2)c+) (?(d3)(ef)?)"))["d3"].type!(MString).value~() == "ef"
+        "ab cc ef".match?(RegExp("(?(d1)`w*) (?(d2)c+) (?(d3)(ef)?)"))["d3"].type!(MString).index~() == 6
 
 #noinline
 def testRegExp_stringBegin(write ok Int, write errorsCoordinates List)
@@ -749,6 +809,10 @@ def testRegExp_stringBegin(write ok Int, write errorsCoordinates List)
         "aa".match?(RegExp("aa^")).nothing?()
         "a".match?(RegExp("^`w")).type!(Map).empty?()
         "some".match?(RegExp("^some")).type!(Map).empty?()
+        "".match?(RegExp("(?(d)^)"))["d"].type!(MString).value~().empty?()
+        "".match?(RegExp("(?(d)^)"))["d"].type!(MString).index~() == 0
+        "1".match?(RegExp("(?(d)^)."))["d"].type!(MString).value~().empty?()
+        "1".match?(RegExp("(?(d)^)."))["d"].type!(MString).index~() == 0
 
 #noinline
 def testRegExp_stringEnd(write ok Int, write errorsCoordinates List)
@@ -761,58 +825,93 @@ def testRegExp_stringEnd(write ok Int, write errorsCoordinates List)
         "aa".match?(RegExp("$aa")).nothing?()
         "a".match?(RegExp("`w$")).type!(Map).empty?()
         "some".match?(RegExp("some$")).type!(Map).empty?()
+        "".match?(RegExp("(?(d)$)"))["d"].type!(MString).value~().empty?()
+        "".match?(RegExp("(?(d)$)"))["d"].type!(MString).index~() == 0
+        "1".match?(RegExp(".(?(d)$)"))["d"].type!(MString).value~().empty?()
+        "1".match?(RegExp(".(?(d)$)"))["d"].type!(MString).index~() == 1
 
 #noinline
 def testRegExp_namedPattern(write ok Int, write errorsCoordinates List)
     test: ok, errorsCoordinates
         "".match?(RegExp("(?(name)`w{0,3})")).type!(Map).length() == 1
-        "".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"] == ""
+        "".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"].type!(MString).value~() == ""
+        "".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"].type!(MString).index~() == 0
         "1".match?(RegExp("(?(name)`w{0,3})")).type!(Map).length() == 1
-        "1".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"] == "1"
+        "1".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"].type!(MString).value~() == "1"
+        "1".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"].type!(MString).index~() == 0
         "1we".match?(RegExp("(?(name)`w{0,3})")).type!(Map).length() == 1
-        "1we".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"] == "1we"
+        "1we".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"].type!(MString).value~() == "1we"
+        "1we".match?(RegExp("(?(name)`w{0,3})")).type!(Map)["name"].type!(MString).index~() == 0
         "1we3ew".match?(RegExp("(?(name)`w{1,3})+")).type!(Map).length() == 1
-        "1we3ew".match?(RegExp("(?(name)`w{1,3})+")).type!(Map)["name"] == "3ew"
+        "1we3ew".match?(RegExp("(?(name)`w{1,3})+")).type!(Map)["name"].type!(MString).value~() == "3ew"
+        "1we3ew".match?(RegExp("(?(name)`w{1,3})+")).type!(Map)["name"].type!(MString).index~() == 3
         "1we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map).length() == 1
-        "1we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map)["name"] == "ew"
+        "1we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map)["name"].type!(MString).value~() == "ew"
+        "1we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map)["name"].type!(MString).index~() == 4
+        "11we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map)["name"].type!(MString).value~() == "w"
+        "11we3ew".match?(RegExp("(?(name)`w{1,2})+")).type!(Map)["name"].type!(MString).index~() == 6
         "1we3ew".match?(RegExp("(?(name)`W{1,2})+")).nothing?()
         "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map).length() == 4
-        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n0"] == ""
-        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n1"] == "1"
-        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n2"] == "22"
-        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n3"] == ""
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n0"].type!(MString).value~() == ""
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n0"].type!(MString).index~() == 0
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n1"].type!(MString).value~() == "1"
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n1"].type!(MString).index~() == 0
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n2"].type!(MString).value~() == "22"
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n2"].type!(MString).index~() == 2
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n3"].type!(MString).value~() == ""
+        "1 22".match?(RegExp("(?(n0)^)(?(n1)`b1`b) (?(n2)2`B2)(?(n3)$)")).type!(Map)["n3"].type!(MString).index~() == 4
         "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map).length() == 8
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n0"] == "12"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n1"] == "22"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n2"] == "3"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n3"] == "44"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n4"] == "555"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n5"] == "6"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n6"] == "77"
-        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n7"] == "8"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n0"].type!(MString).value~() == "12"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n0"].type!(MString).index~() == 0
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n1"].type!(MString).value~() == "22"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n1"].type!(MString).index~() == 3
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n2"].type!(MString).value~() == "3"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n2"].type!(MString).index~() == 6
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n3"].type!(MString).value~() == "44"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n3"].type!(MString).index~() == 8
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n4"].type!(MString).value~() == "555"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n4"].type!(MString).index~() == 11
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n5"].type!(MString).value~() == "6"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n5"].type!(MString).index~() == 15
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n6"].type!(MString).value~() == "77"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n6"].type!(MString).index~() == 17
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n7"].type!(MString).value~() == "8"
+        "12 22 3 44 555 6 77 8".match?(RegExp("(?(n0)12) (?(n1)2{2}) (?(n2)3{1,2}) (?(n3)4{,2}) (?(n4)5{1,}) (?(n5)6?) (?(n6)7+) (?(n7)8*)")).type!(Map)["n7"].type!(MString).index~() == 20
         "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map).length() == 3
-        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n0"] == "1"
-        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n1"] == "2"
-        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n2"] == "123"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n0"].type!(MString).value~() == "1"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n0"].type!(MString).index~() == 0
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n1"].type!(MString).value~() == "2"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n1"].type!(MString).index~() == 2
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n2"].type!(MString).value~() == "123"
+        "1 2 123".match?(RegExp("(?(n0)(1)|(2)) (?(n1)(1)|(2)) (?(n2)(?:13)`d{3})")).type!(Map)["n2"].type!(MString).index~() == 4
         "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map).length() == 4
-        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n0"] == "1"
-        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n1"] == "1"
-        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n2"] == "123"
-        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n3"] == "1"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n0"].type!(MString).value~() == "1"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n0"].type!(MString).index~() == 0
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n1"].type!(MString).value~() == "1"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n1"].type!(MString).index~() == 2
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n2"].type!(MString).value~() == "123"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n2"].type!(MString).index~() == 4
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n3"].type!(MString).value~() == "1"
+        "1 1 123".match?(RegExp("(?(n0)1) (?(n1)`(n0)) (?(n2)(?(n3)1)23)")).type!(Map)["n3"].type!(MString).index~() == 4
         "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map).length() == 3
-        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n0"] == "1"
-        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n1"] == "2"
-        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n2"] == "123"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n0"].type!(MString).value~() == "1"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n0"].type!(MString).index~() == 0
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n1"].type!(MString).value~() == "2"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n1"].type!(MString).index~() == 2
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n2"].type!(MString).value~() == "123"
+        "1 2 123".match?(RegExp("(?(n0)(??1 )1) (?(n1)(?`(n0=(1))(2)( 123))) (?(n2)(?`(n0=(2))(1)(123)))")).type!(Map)["n2"].type!(MString).index~() == 4
         "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map).length() == 2
-        "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map)["n0"] == "`1~a bl \000000"
-        "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map)["n1"] == "1234"
+        "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map)["n0"].type!(MString).value~() == "`1~a bl \000000"
+        "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map)["n0"].type!(MString).index~() == 0
+        "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map)["n1"].type!(MString).value~() == "1234"
+        "`1~a bl \000000 1234".match?(RegExp("(?(n0).`d.`D`s`S`w`W#\000000) (?(n1)(1234))")).type!(Map)["n1"].type!(MString).index~() == 10
         RegExp("(?(") : eid_invalidRegExp
         RegExp("(?()1)") : eid_invalidRegExp
         RegExp("(?()1") : eid_invalidRegExp
         RegExp("(?())") : eid_invalidRegExp
         RegExp("(?(n))") : eid_invalidRegExp
         RegExp("(?()") : eid_invalidRegExp
-        RegExp("(?()())") : eid_invalidRegExp
+        RegExp("(?())") : eid_invalidRegExp
         RegExp("(?(n)())") : eid_invalidRegExp
 
 #noinline
@@ -826,13 +925,15 @@ def testRegExp_ifPattern(write ok Int, write errorsCoordinates List)
         "12".match?(RegExp("(?(name)1)(?`(name=(1))(2)(1))")).type!(Map).length() == 1
         "12".match?(RegExp("(?(name)1)(?`(name=(3))(1)(2))")).type!(Map).length() == 1
         "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map).length() == 2
-        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["key"] == "12"
-        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["value"] == "13"
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["key"].type!(MString).value~() == "12"
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["key"].type!(MString).index~() == 0
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["value"].type!(MString).value~() == "13"
+        "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))($)(^))")).type!(Map)["value"].type!(MString).index~() == 5
         "12 = 13".match?(RegExp("(?(key)`w+)`s*=`s*(?(value)`w+)(?`(key=(12))(^)($))")).nothing?()
         RegExp("(?`(key=(12))(^)())") : eid_invalidRegExp
-        RegExp("(?`(key=(12))()())") : eid_invalidRegExp
+        RegExp("(?`(key=(12))())") : eid_invalidRegExp
         RegExp("(?`(key=(12))()($))") : eid_invalidRegExp
-        RegExp("(?`(key=(12))()()") : eid_invalidRegExp
+        RegExp("(?`(key=(12))()") : eid_invalidRegExp
         RegExp("(?`(key=(12))()))") : eid_invalidRegExp
         RegExp("(?`") : eid_invalidRegExp
         RegExp("(?`(") : eid_invalidRegExp
@@ -841,9 +942,17 @@ def testRegExp_ifPattern(write ok Int, write errorsCoordinates List)
         RegExp("(?`(sda=(") : eid_invalidRegExp
         RegExp("(?`(sda(") : eid_invalidRegExp
         RegExp("(?`(sda)") : eid_invalidRegExp
-        RegExp("(?`(sda=())()()") : eid_invalidRegExp
-        RegExp("(?`(=())()()") : eid_invalidRegExp
+        RegExp("(?`(sda=())()") : eid_invalidRegExp
+        RegExp("(?`(=())()") : eid_invalidRegExp
         RegExp("(?`(=())(a)(a)") : eid_invalidRegExp
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(1))(2)(0)))"))["d1"].type!(MString).value~() == "1"
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(1))(2)(0)))"))["d1"].type!(MString).index~() == 0
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(1))(2)(0)))"))["d2"].type!(MString).value~() == "2"
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(1))(2)(0)))"))["d2"].type!(MString).index~() == 2
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(2))(0)(2)))"))["d1"].type!(MString).value~() == "1"
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(2))(0)(2)))"))["d1"].type!(MString).index~() == 0
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(2))(0)(2)))"))["d2"].type!(MString).value~() == "2"
+        "1 2".match?(RegExp("(?(d1)1) (?(d2)(?`(d1=(2))(0)(2)))"))["d2"].type!(MString).index~() == 2
 
 #noinline
 def testRegExp_namedString(write ok Int, write errorsCoordinates List)
@@ -857,6 +966,12 @@ def testRegExp_namedString(write ok Int, write errorsCoordinates List)
         "123123".match?(RegExp("(?(name)`d{3})`(name)")).type!(Map).length() == 1
         RegExp("`(") : eid_invalidRegExp
         RegExp("`()") : eid_invalidRegExp
+        "1=1=1".match?(RegExp("(?(d1)1)=(?(d2)`(d1))=(?(d3)`(d2))"))["d1"].type!(MString).value~() == "1"
+        "1=1=1".match?(RegExp("(?(d1)1)=(?(d2)`(d1))=(?(d3)`(d2))"))["d1"].type!(MString).index~() == 0
+        "1=1=1".match?(RegExp("(?(d1)1)=(?(d2)`(d1))=(?(d3)`(d2))"))["d2"].type!(MString).value~() == "1"
+        "1=1=1".match?(RegExp("(?(d1)1)=(?(d2)`(d1))=(?(d3)`(d2))"))["d2"].type!(MString).index~() == 2
+        "1=1=1".match?(RegExp("(?(d1)1)=(?(d2)`(d1))=(?(d3)`(d2))"))["d3"].type!(MString).value~() == "1"
+        "1=1=1".match?(RegExp("(?(d1)1)=(?(d2)`(d1))=(?(d3)`(d2))"))["d3"].type!(MString).index~() == 4
 
 #noinline
 def testRegExp_or(write ok Int, write errorsCoordinates List)
@@ -883,6 +998,12 @@ def testRegExp_or(write ok Int, write errorsCoordinates List)
         RegExp("(1)|()") : eid_invalidRegExp
         RegExp("(|()") : eid_invalidRegExp
         RegExp(")|(1)") : eid_invalidRegExp
+        "ab cd ef".match?(RegExp("(?(d1)(ab)|(bc)) (?(d2)(ab)|(cd)) (?(d3)(a)|(ef))"))["d1"].type!(MString).value~() == "ab"
+        "ab cd ef".match?(RegExp("(?(d1)(ab)|(bc)) (?(d2)(ab)|(cd)) (?(d3)(a)|(ef))"))["d1"].type!(MString).index~() == 0
+        "ab cd ef".match?(RegExp("(?(d1)(ab)|(bc)) (?(d2)(ab)|(cd)) (?(d3)(a)|(ef))"))["d2"].type!(MString).value~() == "cd"
+        "ab cd ef".match?(RegExp("(?(d1)(ab)|(bc)) (?(d2)(ab)|(cd)) (?(d3)(a)|(ef))"))["d2"].type!(MString).index~() == 3
+        "ab cd ef".match?(RegExp("(?(d1)(ab)|(bc)) (?(d2)(ab)|(cd)) (?(d3)(a)|(ef))"))["d3"].type!(MString).value~() == "ef"
+        "ab cd ef".match?(RegExp("(?(d1)(ab)|(bc)) (?(d2)(ab)|(cd)) (?(d3)(a)|(ef))"))["d3"].type!(MString).index~() == 6
 
 #noinline
 def testRegExp_regExp(write ok Int, write errorsCoordinates List)
@@ -897,7 +1018,8 @@ def testRegExp_regExp(write ok Int, write errorsCoordinates List)
         "11".match?(RegExp("(1)(1)")).type!(Map).empty?()
         "12".match?(RegExp("(1)(2)")).type!(Map).empty?()
         "124567890".match?(RegExp("12.*")).type!(Map).empty?()
-        "124567890".match?(RegExp("12(?(r).*)")).type!(Map)["r"] == "4567890"
+        "124567890".match?(RegExp("12(?(r).*)")).type!(Map)["r"].type!(MString).value~() == "4567890"
+        "124567890".match?(RegExp("12(?(r).*)")).type!(Map)["r"].type!(MString).index~() == 2
         RegExp("(()") : eid_invalidRegExp
         RegExp("())") : eid_invalidRegExp
         RegExp("(") : eid_invalidRegExp
@@ -911,3 +1033,9 @@ def testRegExp_regExp(write ok Int, write errorsCoordinates List)
         RegExp("}") : eid_invalidRegExp
         RegExp("]") : eid_invalidRegExp
         RegExp("{]}") : eid_invalidRegExp
+        "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d1"].type!(MString).value~() == "ab"
+        "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d1"].type!(MString).index~() == 0
+        "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d2"].type!(MString).value~() == "cd"
+        "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d2"].type!(MString).index~() == 3
+        "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d3"].type!(MString).value~() == "ef"
+        "ab cd ef".match?(RegExp("(?(d1)(ab)) (?(d2)(cd)) (?(d3)(ef))"))["d3"].type!(MString).index~() == 6

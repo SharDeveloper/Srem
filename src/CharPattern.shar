@@ -83,10 +83,11 @@ def readCharPattern(regExp String, write charIndex Int) CharPattern
     return CharPattern{chars: chars, negative: negative}
 
 attach CharPattern to Pattern
-    def patternMatch?(string String, pattern CharPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>String
+    def patternMatch?(string String, pattern CharPattern, write charIndex Int, write namedStrings Map, isResultNeeded Bool) <>MString
+        var result <>MString = nothing
         if charIndex != string.length()
             const currentChar Char = string[charIndex]
             if pattern.chars~().contain?(currentChar) != pattern.negative~()
+                result = MString{value : isResultNeeded.select(currentChar.toString(), ""), index : charIndex}
                 charIndex++
-                return isResultNeeded.select(currentChar.toString(), "")
-        return nothing
+        return result
